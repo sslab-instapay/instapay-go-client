@@ -8,6 +8,7 @@ import (
 func main() {
 	// os[1] os[2] 로 전역변수 셋팅.
 	defaultRouter := gin.Default()
+	defaultRouter.LoadHTMLGlob("templates/*")
 
 	router.RegisterChannelRouter(defaultRouter)
 	router.RegisterAccountRouter(defaultRouter)
