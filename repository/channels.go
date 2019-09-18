@@ -1,11 +1,11 @@
 package repository
 
 import (
-	"github.com/instapay-go-client/db"
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"log"
-	"github.com/instapay-go-client/model"
+	"github.com/sslab-instapay/instapay-go-client/model"
+	"github.com/sslab-instapay/instapay-go-client/db"
 )
 
 func GetChannelList() ([]model.Channel, error) {
@@ -38,7 +38,6 @@ func GetChannelList() ([]model.Channel, error) {
 	return channels, nil
 }
 
-//TODO 닫힌채널만 하게 쿼리 수정
 func GetClosedChannelList() ([]model.Channel, error) {
 
 	database, err := db.GetDatabase()
@@ -69,7 +68,7 @@ func GetClosedChannelList() ([]model.Channel, error) {
 
 	return channels, nil
 }
-//TODO 열린채 하게 쿼리 수정
+
 func GetOpenedChannelList() ([]model.Channel, error) {
 
 	database, err := db.GetDatabase()

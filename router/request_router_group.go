@@ -3,25 +3,13 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-
 	"github.com/sslab-instapay/instapay-go-client/controller"
 )
 
-// 라우터 등록 코드
-func RegisterAccountRouter(router *gin.Engine){
 
-	accountRouter := router.Group("account")
-	{
-		accountRouter.GET("list", func(context *gin.Context) {
-			context.JSON(http.StatusOK, gin.H{"message": "account"})
-		})
+func RegisterRequestChannelRouter(router *gin.Engine){
 
-	}
-}
-
-func RegisterChannelRouter(router *gin.Engine){
-
-	channelRouter := router.Group("channels")
+	channelRouter := router.Group("requests/channels")
 	{
 		channelRouter.POST("open", controller.OpenChannelHandler)
 
@@ -30,13 +18,13 @@ func RegisterChannelRouter(router *gin.Engine){
 		//		//	context.JSON(http.StatusOK, controller.DepositChannelHandler)
 		//		//})
 
-		channelRouter.POST("direct", func(context *gin.Context) {
+		channelRouter.POST("payDirect", func(context *gin.Context) {
 			context.JSON(http.StatusOK, controller.DirectChannelHandler)
 		})
 
 		channelRouter.POST("close", controller.CloseChannelHandler)
 
-		channelRouter.POST("server", controller.PaymentToServerChannelHandler)
+		channelRouter.POST("payServer", controller.PaymentToServerChannelHandler)
 	}
 }
 

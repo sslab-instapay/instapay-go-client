@@ -3,9 +3,9 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"github.com/instapay-go-client/repository"
 	"log"
-	"github.com/instapay-go-client/config"
+	"github.com/sslab-instapay/instapay-go-client/config"
+	"github.com/sslab-instapay/instapay-go-client/repository"
 )
 
 func RegisterViewRouter(router *gin.Engine) {
