@@ -26,8 +26,8 @@ type Channel struct {
 	ChannelName   string             `bson:"channelName"`
 	Status        ChannelStatus      `bson:"channelStatus"` //IDLE, PRE_UPDATE, POST_UPDATE
 	MyAddress     string             `bson:"myAddress"`
-	MyDeposit     int                `bson:"myDeposit"`
-	MyBalance     int                `bson:"myBalance"`
+	MyDeposit     float64            `bson:"myDeposit"`
+	MyBalance     float64            `bson:"myBalance"`
 	OtherAddress  string             `bson:"otherAddress"`
 	VersionNumber int                `bson:"versionNumber"`
 	OtherIp       int                `bson:"otherIp"`
