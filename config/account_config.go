@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/sslab-instapay/instapay-go-client/model"
-)
+	)
 
 // TODO Enclave에서 포트에 따라 어카운트 주소 불러와야함
 func GetAccountConfig(port int) model.Account {
@@ -16,6 +16,6 @@ func GetAccountConfig(port int) model.Account {
 	return model.Account{
 		PublicKeyAddress: "0x12421t2tjgfiq",
 		PrivateKey: "0xquotuinq2otnqwg",
-		Balance: 10,
+		Balance: GetBalance("0x12421t2tjgfiq"),
 	}
 }

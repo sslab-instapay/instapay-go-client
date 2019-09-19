@@ -9,6 +9,8 @@ import (
 		"github.com/ethereum/go-ethereum/accounts/abi"
 	"strings"
 	"github.com/ethereum/go-ethereum"
+		"math/big"
+	"math"
 )
 
 var ethereumConfig = map[string]string{
@@ -70,4 +72,27 @@ func GetContract(){
 			// TODO 이벤트 처리
 		}
 	}
+}
+
+
+func GetBalance(address string) big.Float {
+
+	account := common.HexToAddress(address)
+	client, err := ethclient.Dial(ethereumConfig["wsHort"] + ":" + ethereumConfig["wsPort"])
+
+	if err != nil{
+		log.Fatal(err)
+	}
+
+	balance, err := client.BalanceAt(context.Background(), account, nil)
+
+	if err != nil{
+		log.Fatal(err)
+	}
+
+	floatBalance := new(big.Float)
+	floatBalance.SetString(balance.String())
+	ethValue := new(big.Float).Quo(floatBalance, big.NewFloat(math.Pow10(18)))
+
+	return *ethValue
 }

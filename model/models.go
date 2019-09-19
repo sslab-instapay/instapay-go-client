@@ -2,12 +2,13 @@ package model
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"math/big"
 )
 
 type Account struct {
 	PublicKeyAddress string
 	PrivateKey       string
-	Balance          float64
+	Balance          big.Float
 }
 
 type ChannelStatus int
