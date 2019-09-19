@@ -61,7 +61,7 @@ func PaymentToServerChannelHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"message": "Channel"})
 }
 
-func GetChannelListHanlder(context *gin.Context){
+func GetChannelListHandler(context *gin.Context){
 
 	channelList, err := repository.GetChannelList()
 	if err != nil {

@@ -18,7 +18,7 @@ func RegisterRestChannelRouter(router *gin.Engine){
 
 	channelRouter := router.Group("channel")
 	{
-		channelRouter.GET("list", controller.GetChannelListHanlder)
+		channelRouter.GET("list", controller.GetChannelListHandler)
 	}
 }
 
@@ -27,7 +27,7 @@ func RegisterHistoryChannelRouter(router *gin.Engine){
 
 	channelRouter := router.Group("channel")
 	{
-		channelRouter.GET("list", controller.GetChannelListHanlder)
+		channelRouter.GET("list", controller.GetChannelListHandler)
 	}
 }
 
