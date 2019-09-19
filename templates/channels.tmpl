@@ -38,19 +38,18 @@
                 </thead>
                 <tbody>
                 {{ range $i, $channel := .channelList}}
-                    {{ $modalID := "channelModal" $i }}
                     <tr>
                         <form method="post" action="close">
                             <td>{{ $channel.ChannelId }}</td>
                             <td>{{ $channel.MyAddress }}</td>
                             <td>{{ $channel.OtherAddress }}</td>
                             <td>{{ $channel.Status }}</td>
-                            <td><button type="button" id="detail_modal" class="btn btn-light" data-toggle="modal" data-target=#{{ $modalID }}>detail</button></td>
+                            <td><button type="button" id="detail_modal" class="btn btn-light" data-toggle="modal" data-target=#modal{{$i}}>detail</button></td>
                             <input type="hidden" id="ch_id" name="ch_id" value={{ $channel.ChannelId }}>
                             <td><button type="submit" class="btn btn-light">close</button></td>
                         </form>
                     </tr>
-                    <div class="modal" id={{ $modalID }}>
+                    <div class="modal" id="modal{{$i}}">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -59,10 +58,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <p class="font-weight-bold">My deposit: {{ $channel.OtherAddress }}</p>
-                                    <p class="font-weight-bold">Other's deposit: {{ $channel.OtherDeposit }}</p>
                                     <p class="font-weight-bold">My balance: {{ $channel.MyBalance }}</p>
-                                    <p class="font-weight-bold">Other's balance: {{ $channel.OtherBalance }}</p>
-                                    <p class="font-weight-bold">Version number: {{ $channel.VersionNumber }}</p>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
