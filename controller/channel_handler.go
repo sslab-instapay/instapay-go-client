@@ -7,7 +7,7 @@ import (
 	"github.com/sslab-instapay/instapay-go-client/repository"
 	"log"
 	"fmt"
-)
+				)
 
 func OpenChannelHandler(context *gin.Context)  {
 	//channelName := context.PostForm("ch_name")
@@ -15,7 +15,7 @@ func OpenChannelHandler(context *gin.Context)  {
 	//otherAddress := context.PostForm("other_addr")
 	//deposit := context.PostForm("deposit")
 
-	//TODO 채널 오픈 요청 컨트랙트와 ~~
+	//TODO 채널 오픈 요청 컨트랙트와 ~~\
 
 	context.JSON(http.StatusOK, gin.H{"message": "Channel"})
 }

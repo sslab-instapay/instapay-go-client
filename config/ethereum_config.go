@@ -11,9 +11,9 @@ import (
 	"github.com/ethereum/go-ethereum"
 		"math/big"
 	"math"
-)
+	)
 
-var ethereumConfig = map[string]string{
+var EthereumConfig = map[string]string{
 	/* web3 and ethereum */
 	"wsHost":           "localhost", //141.223.121.139
 	"wsPort":           "8881",
@@ -34,11 +34,11 @@ var ethereumConfig = map[string]string{
 }
 
 func GetContract(){
-	client, err := ethclient.Dial(ethereumConfig["wsHort"] + ":" + ethereumConfig["wsPort"])
+	client, err := ethclient.Dial(EthereumConfig["wsHort"] + ":" + EthereumConfig["wsPort"])
 	if err != nil {
 		log.Fatal(err)
 	}
-	contractAddress := common.HexToAddress(ethereumConfig["contractAddr"])
+	contractAddress := common.HexToAddress(EthereumConfig["contractAddr"])
 	// 모든 이벤트 수
 	query := ethereum.FilterQuery{
 		Addresses: []common.Address{contractAddress},
@@ -78,7 +78,7 @@ func GetContract(){
 func GetBalance(address string) big.Float {
 
 	account := common.HexToAddress(address)
-	client, err := ethclient.Dial(ethereumConfig["wsHort"] + ":" + ethereumConfig["wsPort"])
+	client, err := ethclient.Dial(EthereumConfig["wsHort"] + ":" + EthereumConfig["wsPort"])
 
 	if err != nil{
 		log.Fatal(err)
@@ -95,4 +95,39 @@ func GetBalance(address string) big.Float {
 	ethValue := new(big.Float).Quo(floatBalance, big.NewFloat(math.Pow10(18)))
 
 	return *ethValue
+}
+
+func SendPaymentTransaction(){
+
+	//client, err := ethclient.Dial(EthereumConfig["wsHort"] + ":" + EthereumConfig["wsPort"])
+	//gasLimit := uint64(21000)
+	//
+	//nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//gasPrice, err := client.SuggestGasPrice(context.Background())
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//value := big.NewInt(1000000000000000000)
+	//
+	//toAddress := common.HexToAddress("0x4592d8f8d7b001e72cb26a73e4fa1806a51ac79d")
+	//var data []byte
+	//tx := types.NewTransaction(nonce, toAddress, value, gasLimit, gasPrice, data)
+	//chainID, err := client.NetworkID(context.Background())
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//signedTx, err := types.SignTx(tx, types.NewEIP155Signer(chainID), privateKey)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//err = client.SendTransaction(context.Background(), signedTx)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 }
