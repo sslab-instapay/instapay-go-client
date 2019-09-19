@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/instapay-go-client/model"
+	"github.com/sslab-instapay/instapay-go-client/model"
 )
 
 // TODO Enclave에서 포트에 따라 어카운트 주소 불러와야함

@@ -6,6 +6,7 @@ import (
 	"log"
 	"github.com/sslab-instapay/instapay-go-client/config"
 	"github.com/sslab-instapay/instapay-go-client/repository"
+	"github.com/sslab-instapay/instapay-go-client/model"
 )
 
 func RegisterViewRouter(router *gin.Engine) {
@@ -16,7 +17,7 @@ func RegisterViewRouter(router *gin.Engine) {
 		viewRouter.GET("accounts/list", func(context *gin.Context) {
 			//gin.H 부분에서 변수 다루는 것.
 			// TODO 고치기
-			account := config.GetAccountConfig(1111)
+			account := model.Account{ PublicKeyAddress: "0xasdnfosaf", PrivateKey: "0xqweiqwjt" }
 			context.HTML(http.StatusOK, "account.tmpl", gin.H{
 				"account": account,
 			})
@@ -48,7 +49,12 @@ func RegisterViewRouter(router *gin.Engine) {
 
 		// Pay 페이지
 		viewRouter.GET("channels/pay", func(context *gin.Context) {
-			context.JSON(http.StatusOK, gin.H{"message": "account"})
+			channelIdList, err := repository.GetChannelIdList()
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			context.HTML(http.StatusOK, "pay.tmpl", gin.H{"channelIdList": channelIdList})
 		})
 	}
 }

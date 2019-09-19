@@ -21,7 +21,7 @@ func RegisterAccountRouter(router *gin.Engine){
 
 func RegisterChannelRouter(router *gin.Engine){
 
-	channelRouter := router.Group("channels")
+	channelRouter := router.Group("channels/requests")
 	{
 		channelRouter.POST("open", controller.OpenChannelHandler)
 
@@ -31,7 +31,7 @@ func RegisterChannelRouter(router *gin.Engine){
 		//		//})
 
 		channelRouter.POST("direct", func(context *gin.Context) {
-			context.JSON(http.StatusOK, controller.DirectChannelHandler)
+			context.JSON(http.StatusOK, controller.DirectPayChannelHandler)
 		})
 
 		channelRouter.POST("close", controller.CloseChannelHandler)

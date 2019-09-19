@@ -1,10 +1,11 @@
 package data_test
 
 import (
-	"github.com/instapay-go-client/repository"
 	"fmt"
 	"testing"
-		"log"
+	"log"
+	"github.com/sslab-instapay/instapay-go-client/repository"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 func TestGetChannelList(t *testing.T){
@@ -35,6 +36,16 @@ func TestGetOpenedChannelList(t *testing.T){
 	}
 
 	fmt.Println(channelList)
+}
+
+func TestGetChannelById(t *testing.T){
+	objectId, _ := primitive.ObjectIDFromHex("5d7fb9669f65573e75071f97")
+	channel, err := repository.GetChannelById(objectId)
+
+	if err != nil{
+		log.Fatal(err)
+	}
+	fmt.Println(channel)
 }
 
 

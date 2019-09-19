@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/instapay-go-client/router"
+	"github.com/sslab-instapay/instapay-go-client/router"
 	)
 
 func main() {

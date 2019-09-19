@@ -36,18 +36,17 @@
                     </thead>
                     <tbody>
                     {{ range $i, $closedChannel := .closedChannelList }}
-                        {{ $modalID := "channelModal" $i }}
                         <tr>
                             <td>{{ $closedChannel.ChannelId }}</td>
                             <td>{{ $closedChannel.MyAddress }}</td>
                             <td>{{ $closedChannel.OtherAddress }}</td>
                             <td>
                                 <button type="button" id="detail_modal" class="btn btn-light" data-toggle="modal"
-                                        data-target="#{{ $modalID }}">detail
+                                        data-target="#modal{{$i}}">detail
                                 </button>
                             </td>
                         </tr>
-                        <div class="modal" id={{ $modalID }}>
+                        <div class="modal" id="modal{{$i}}">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -56,9 +55,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <p class="font-weight-bold">My deposit: {{ $closedChannel.MyDeposit }}</p>
-                                        <p class="font-weight-bold">Other's deposit: {{ $closedChannel.OtherDeposit }}</p>
                                         <p class="font-weight-bold">My balance: {{ $closedChannel.MyBalance }} </p>
-                                        <p class="font-weight-bold">Other's balance: {{ $closedChannel.OtherBalance }}</p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
