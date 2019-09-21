@@ -15,9 +15,9 @@ import (
 
 var EthereumConfig = map[string]string{
 	/* web3 and ethereum */
-	"wsHost":           "localhost", //141.223.121.139
+	"wsHost":           "141.223.121.139",
 	"wsPort":           "8881",
-	"contractAddr":     "0x164e52dD2A8a572f638A1f9EA5C02c2868499953",
+	"contractAddr":     "0x092d70BB5c1954F5Fa3EBbb282d0416a5e46c818",
 	"contractSrcPath":  "../contracts/InstaPay.sol",
 	"contractInstance": "",
 	"web3":             "",
@@ -33,8 +33,8 @@ var EthereumConfig = map[string]string{
 	"receiver":       "",
 }
 
-func GetContract(){
-	client, err := ethclient.Dial(EthereumConfig["wsHort"] + ":" + EthereumConfig["wsPort"])
+func ListenContractEvent(){
+	client, err := ethclient.Dial("ws://" + EthereumConfig["wsHost"] + ":" + EthereumConfig["wsPort"])
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -70,6 +70,9 @@ func GetContract(){
 				log.Fatal(err)
 			}
 			// TODO 이벤트 처리
+			//event EventCreateChannel(uint256 id, address owner, address receiver, uint256 deposit);
+			//    event EventCloseChannel(uint256 id, uint256 owner_bal, uint256 receiver_bal);
+			//    event EventEject(uint256 pn, Stage registered_stage);
 		}
 	}
 }
@@ -78,7 +81,7 @@ func GetContract(){
 func GetBalance(address string) big.Float {
 
 	account := common.HexToAddress(address)
-	client, err := ethclient.Dial(EthereumConfig["wsHort"] + ":" + EthereumConfig["wsPort"])
+	client, err := ethclient.Dial("ws://" + EthereumConfig["wsHost"] + ":" + EthereumConfig["wsPort"])
 
 	if err != nil{
 		log.Fatal(err)

@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+service Client {
+    rpc agreementRequest(AgreeRequestsMessage) returns (Result) {}
+    rpc updateRequest(ChannelIDs) returns (Result) {}
+    rpc confirmPayment(Payments) returns (Result) {}
+}
+
+message AgreeRequestsMessage {
+    string ch_id = 1;
+    float amount = 2;
+    string pn = 3;
+}
+
+message UpdateRequestsMessage{
+
+}
+
+message ConfirmRequestsMessage{
+
+}
+
+message ChannelIDs {
+    message ChannelID {
+        string ch_id = 1;
+    }
+    repeated ChannelID ch_ids = 1;
+}
+
+message Payments {
+    message PaymentData {
+        string ch_id = 1;
+        float amount = 2;
+        bool pay = 3;
+    }
+    repeated PaymentData pd = 1;
+}
+
+message Result {
+    string result = 1;
+}

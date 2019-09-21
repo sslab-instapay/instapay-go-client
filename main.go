@@ -11,8 +11,9 @@ func main() {
 	defaultRouter.LoadHTMLGlob("templates/*")
 
 	router.RegisterChannelRouter(defaultRouter)
-	router.RegisterAccountRouter(defaultRouter)
+	router.RegisterRestAccountRouter(defaultRouter)
 	router.RegisterViewRouter(defaultRouter)
+
 
 
 	defaultRouter.Run(":7777")

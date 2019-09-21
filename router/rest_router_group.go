@@ -22,14 +22,6 @@ func RegisterRestChannelRouter(router *gin.Engine){
 	}
 }
 
-// TODO 페이먼트 히스토리 추가할 것인지?
-func RegisterHistoryChannelRouter(router *gin.Engine){
-
-	channelRouter := router.Group("channel")
-	{
-		channelRouter.GET("list", controller.GetChannelListHandler)
-	}
-}
 
 
 
