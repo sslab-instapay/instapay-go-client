@@ -6,7 +6,7 @@ import (
 	"log"
 	"github.com/sslab-instapay/instapay-go-client/model"
 	"github.com/sslab-instapay/instapay-go-client/db"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"fmt"
 )
 
 func GetChannelList() ([]model.Channel, error) {
@@ -39,7 +39,7 @@ func GetChannelList() ([]model.Channel, error) {
 	return channels, nil
 }
 
-func GetChannelIdList() ([]string, error) {
+func GetChannelIdList() ([]int64, error) {
 
 	database, err := db.GetDatabase()
 	if err != nil {
@@ -53,7 +53,7 @@ func GetChannelIdList() ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	var channelIds []string
+	var channelIds []int64
 
 	defer cur.Close(context.Background())
 	for cur.Next(context.Background()) {
@@ -63,7 +63,7 @@ func GetChannelIdList() ([]string, error) {
 			log.Fatal(err)
 		}
 		// To get the raw bson bytes use cursor.Current
-		channelIds = append(channelIds, channel.ChannelId.String())
+		channelIds = append(channelIds, channel.ChannelId)
 	}
 
 	return channelIds, nil
@@ -111,7 +111,7 @@ func GetOpenedChannelList() ([]model.Channel, error) {
 		"$not": bson.M{
 			"$eq": 3,
 		},
-	} }
+	}}
 	collection := database.Collection("channels")
 
 	cur, err := collection.Find(context.TODO(), filter)
@@ -135,7 +135,7 @@ func GetOpenedChannelList() ([]model.Channel, error) {
 	return channels, nil
 }
 
-func GetChannelById(channelId primitive.ObjectID) (model.Channel, error){
+func GetChannelById(channelId int64) (model.Channel, error) {
 
 	database, err := db.GetDatabase()
 	if err != nil {
@@ -143,15 +143,59 @@ func GetChannelById(channelId primitive.ObjectID) (model.Channel, error){
 	}
 
 	filter := bson.M{
-		"_id": channelId,
+		"channelId": channelId,
 	}
 
 	collection := database.Collection("channels")
 
 	channel := model.Channel{}
 	singleRecord := collection.FindOne(context.TODO(), filter)
-	if err := singleRecord.Decode(&channel); err != nil{
+	if err := singleRecord.Decode(&channel); err != nil {
 		log.Fatal(err)
 	}
+	return channel, nil
+}
+
+func UpdateChannel(channel model.Channel) (model.Channel, error){
+
+	database, err := db.GetDatabase()
+	if err != nil {
+		return model.Channel{}, err
+	}
+
+	collection := database.Collection("channels")
+
+	filter := bson.M{"channelId": channel.ChannelId}
+	update := bson.M{"$set": bson.M{"channelName": channel.ChannelName, "channelStatus": channel.Status,
+	"myBalance": channel.MyBalance, "otherAddress": channel.OtherAddress, "otherPort": channel.OtherPort, }}
+
+	res, err := collection.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+
+	fmt.Println(res.ModifiedCount)
+
+	return channel, nil
+
+}
+
+func InsertChannel(channel model.Channel) (model.Channel, error){
+
+	database, err := db.GetDatabase()
+	if err != nil {
+		return model.Channel{}, err
+	}
+
+	collection := database.Collection("channels")
+
+	insertResult, err := collection.InsertOne(context.TODO(), channel)
+	if err != nil {
+		return model.Channel{}, err
+	}
+
+	fmt.Println(insertResult.InsertedID)
+
 	return channel, nil
 }

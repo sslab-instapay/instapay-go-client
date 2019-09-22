@@ -5,7 +5,8 @@ import (
 	"testing"
 	"log"
 	"github.com/sslab-instapay/instapay-go-client/repository"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/sslab-instapay/instapay-go-client/model"
+	"github.com/sslab-instapay/instapay-go-client/config"
 )
 
 func TestGetChannelList(t *testing.T){
@@ -39,8 +40,7 @@ func TestGetOpenedChannelList(t *testing.T){
 }
 
 func TestGetChannelById(t *testing.T){
-	objectId, _ := primitive.ObjectIDFromHex("5d7fb9669f65573e75071f97")
-	channel, err := repository.GetChannelById(objectId)
+	channel, err := repository.GetChannelById(1)
 
 	if err != nil{
 		log.Fatal(err)
@@ -48,6 +48,33 @@ func TestGetChannelById(t *testing.T){
 	fmt.Println(channel)
 }
 
+func TestUpdateChannel(t *testing.T){
+	channel, err := repository.GetChannelById(2)
+	if err != nil{
+		log.Fatal(err)
+	}
+	
+	channel.OtherPort = 1111
+	updatedChannel, err := repository.UpdateChannel(channel)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(updatedChannel)
+}
+
+func TestInsertChannel(t *testing.T){
+	channel := model.Channel{ChannelId: 1, ChannelName: "hoonki", Status: model.IDLE, MyAddress: config.GetAccountConfig("3001").PublicKeyAddress,}
+
+	insertedChannel, err := repository.InsertChannel(channel)
+
+	if err != nil{
+		log.Fatal(err)
+	}
+
+	fmt.Println(insertedChannel)
+}
 
 
 

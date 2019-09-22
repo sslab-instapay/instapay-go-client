@@ -8,7 +8,9 @@ import (
 
 func TestGetBalance(t *testing.T)  {
 
-	balance := config.GetBalance("0x78902c58006916201F65f52f7834e467877f0500")
+	service := config.EthereumService{}
+
+	balance := service.GetBalance()
 
 	fmt.Println(balance)
 

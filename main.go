@@ -5,6 +5,8 @@ import (
 	"github.com/sslab-instapay/instapay-go-client/router"
 	)
 
+
+var Global = "myvalue"
 func main() {
 	// os[1] os[2] 로 전역변수 셋팅.
 	defaultRouter := gin.Default()

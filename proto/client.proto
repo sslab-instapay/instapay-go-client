@@ -2,40 +2,34 @@ syntax = "proto3";
 
 service Client {
     rpc agreementRequest(AgreeRequestsMessage) returns (Result) {}
-    rpc updateRequest(ChannelIDs) returns (Result) {}
-    rpc confirmPayment(Payments) returns (Result) {}
+    rpc updateRequest(UpdateRequestsMessage) returns (Result) {}
+    rpc confirmPayment(ConfirmRequestsMessage) returns (Result) {}
 }
 
 message AgreeRequestsMessage {
-    string ch_id = 1;
-    float amount = 2;
-    string pn = 3;
+    int32 paymentNumber = 1;
+    ChannelIDs channelIds = 2;
+    float amount = 3;
 }
 
 message UpdateRequestsMessage{
-
+    int32 paymentNumber = 1;
+    ChannelIDs channelIds = 2;
+    float amount = 3;
 }
 
 message ConfirmRequestsMessage{
-
+    int32 paymentNumber = 1;
 }
 
 message ChannelIDs {
     message ChannelID {
-        string ch_id = 1;
+        int32 channelId = 1;
     }
-    repeated ChannelID ch_ids = 1;
-}
-
-message Payments {
-    message PaymentData {
-        string ch_id = 1;
-        float amount = 2;
-        bool pay = 3;
-    }
-    repeated PaymentData pd = 1;
+    repeated ChannelID channelIds = 1;
 }
 
 message Result {
-    string result = 1;
+    int32 paymentNumber = 1;
+    bool result = 2;
 }

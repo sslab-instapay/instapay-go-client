@@ -1,4 +1,4 @@
-pragma solidity 0.4.24;
+pragma solidity ^0.4.24;
 
 contract InstaPay {
     enum ChannelStatus {CLOSED, OPEN}
@@ -17,6 +17,7 @@ contract InstaPay {
     }
 
     uint256 acc_id = 0;
+    uint256 public readme = 4321;
     mapping (uint256 => Channel) public channels;
     mapping (uint256 => Ejection) public ejections;
 
