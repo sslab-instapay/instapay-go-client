@@ -232,6 +232,7 @@ func GetBalance() big.Float {
 	if err != nil {
 		log.Println(err)
 	}
+	log.Println(balance)
 
 	floatBalance := new(big.Float)
 	floatBalance.SetString(balance.String())

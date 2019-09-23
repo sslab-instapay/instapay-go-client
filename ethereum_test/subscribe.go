@@ -10,9 +10,9 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"strings"
-	"math/big"
 	"github.com/sslab-instapay/instapay-go-client/model"
 	"github.com/sslab-instapay/instapay-go-client/repository"
+	"github.com/sslab-instapay/instapay-go-client/config"
 	"fmt"
 )
 
@@ -38,30 +38,12 @@ var EthereumConfig = map[string]string{
 	"receiver":       "",
 }
 
-type CreateChannelEvent struct {
-	Id       *big.Int
-	Owner    common.Address
-	Receiver common.Address
-	Deposit  *big.Int
-}
-
-type CloseChannelEvent struct {
-	Id              *big.Int
-	OwnerBalance    *big.Int
-	ReceiverBalance *big.Int
-}
-
-type EjectEvent struct {
-	PaymentNum *big.Int
-	Stage      int
-}
-
 func main() {
-	client, err := ethclient.Dial("ws://" + EthereumConfig["wsHost"] + ":" + EthereumConfig["wsPort"])
+	client, err := ethclient.Dial("ws://" + config.EthereumConfig["wsHost"] + ":" + config.EthereumConfig["wsPort"])
 	if err != nil {
 		log.Fatal(err)
 	}
-	contractAddress := common.HexToAddress(EthereumConfig["contractAddr"])
+	contractAddress := common.HexToAddress(config.EthereumConfig["contractAddr"])
 
 	query := ethereum.FilterQuery{
 		Addresses: []common.Address{contractAddress},
@@ -84,45 +66,44 @@ func main() {
 		case err := <-sub.Err():
 			log.Fatal(err)
 		case vLog := <-logs:
-			var createChannelEvent = CreateChannelEvent{}
-			var closeChannelEvent = CloseChannelEvent{}
-			var ejectEvent = EjectEvent{}
+			var createChannelEvent = model.CreateChannelEvent{}
+			var closeChannelEvent = model.CloseChannelEvent{}
+			var ejectEvent = model.EjectEvent{}
 
+			log.Println("---Event Receive---")
 			err := contractAbi.Unpack(&createChannelEvent, "EventCreateChannel", vLog.Data)
 			if err == nil {
-				log.Print("CreateChannel Event Emission")
-				fmt.Print(createChannelEvent)
+				fmt.Println("HOHO")
+				log.Println("CreateChannel Event Emission")
 				HandleCreateChannelEvent(createChannelEvent)
 			}
-			log.Println(err)
 
 			err = contractAbi.Unpack(&closeChannelEvent, "EventCloseChannel", vLog.Data)
 			if err == nil {
-				log.Print("CloseChannel Event Emission")
+				log.Println("CloseChannel Event Emission")
 				HandleCloseChannelEvent(closeChannelEvent)
 			}
-			log.Println(err)
 
 			err = contractAbi.Unpack(&ejectEvent, "EventEject", vLog.Data)
 			if err == nil {
 
 			}
-			log.Println(err)
+			log.Println("---Event Handling END---")
 
 		}
 	}
 }
 
-func HandleCreateChannelEvent(event CreateChannelEvent) {
+func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 
 	var channel = model.Channel{ChannelId: event.Id.Int64(), ChannelName: "Random",
 		Status: model.IDLE, MyAddress: event.Receiver.String(),
-		MyBalance: 0, MyDeposit: 0, OtherAddress: event.Owner.String() }
+		MyBalance: 0, MyDeposit: 0, OtherAddress: event.Owner.String()}
 
 	repository.InsertChannel(channel)
 }
 
-func HandleCloseChannelEvent(event CloseChannelEvent) {
+func HandleCloseChannelEvent(event model.CloseChannelEvent) {
 	channel, err := repository.GetChannelById(event.Id.Int64())
 
 	if err != nil {

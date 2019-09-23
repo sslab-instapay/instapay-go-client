@@ -76,6 +76,16 @@ func TestInsertChannel(t *testing.T){
 	fmt.Println(insertedChannel)
 }
 
+func TestGetAllChannelsLockedBalance(t *testing.T){
+
+	lockedBalance, err := repository.GetAllChannelsLockedBalance()
+
+	if err != nil{
+		log.Fatal(err)
+	}
+
+	fmt.Println(lockedBalance)
+}
 
 
 

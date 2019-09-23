@@ -11,7 +11,7 @@ import (
 	"github.com/sslab-instapay/instapay-go-client/router"
 	"os"
 	"strconv"
-)
+	)
 
 func startGrpcServer(){
 	grpcPort, err := strconv.Atoi(os.Getenv("grpc_port"))
@@ -28,11 +28,12 @@ func startClientWebServer(){
 	defaultRouter := gin.Default()
 	defaultRouter.LoadHTMLGlob("templates/*")
 
+	defaultRouter.Use(CORSMiddleware())
 	router.RegisterChannelRouter(defaultRouter)
 	router.RegisterRestAccountRouter(defaultRouter)
 	router.RegisterViewRouter(defaultRouter)
 
-	defaultRouter.Run(":7777")
+	defaultRouter.Run(":" + os.Getenv("port"))
 }
 
 func main() {
@@ -41,8 +42,24 @@ func main() {
 	os.Setenv("port", "3001")
 	os.Setenv("grpc_port", "50001")
 
-	//go config.ListenContractEvent()
+	//go service.ListenContractEvent()
 	//go startGrpcServer()
 	startClientWebServer()
 
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
 }

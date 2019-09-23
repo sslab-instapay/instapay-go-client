@@ -22,7 +22,13 @@ func RegisterRestChannelRouter(router *gin.Engine){
 	}
 }
 
+func RegisterPaymentRouter(router *gin.Engine){
 
+	channelRouter := router.Group("payments")
+	{
+		channelRouter.POST("", controller.GetChannelListHandler)
+	}
+}
 
 
 

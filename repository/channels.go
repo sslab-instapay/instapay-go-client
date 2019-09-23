@@ -39,6 +39,41 @@ func GetChannelList() ([]model.Channel, error) {
 	return channels, nil
 }
 
+func GetAllChannelsLockedBalance() (float32, error){
+
+	database, err := db.GetDatabase()
+	if err != nil {
+		return 0, err
+	}
+
+	filter := bson.M{"channelStatus": bson.M{
+		"$not": bson.M{
+			"$eq": 3,
+		},
+	}}
+	collection := database.Collection("channels")
+
+	cur, err := collection.Find(context.TODO(), filter)
+
+	if err != nil {
+		return 0, err
+	}
+	var lockedBalance float32
+
+	defer cur.Close(context.Background())
+	for cur.Next(context.Background()) {
+		var channel model.Channel
+		err := cur.Decode(&channel)
+		if err != nil {
+			log.Fatal(err)
+		}
+		// To get the raw bson bytes use cursor.Current
+		lockedBalance += channel.LockedBalance
+	}
+
+	return lockedBalance, nil
+}
+
 func GetChannelIdList() ([]int64, error) {
 
 	database, err := db.GetDatabase()
