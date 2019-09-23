@@ -11,7 +11,7 @@ import (
 	"github.com/sslab-instapay/instapay-go-client/router"
 	"os"
 	"strconv"
-	"github.com/sslab-instapay/instapay-go-client/service"
+		"flag"
 )
 
 func startGrpcServer(){
@@ -40,10 +40,15 @@ func startClientWebServer(){
 func main() {
 	// os[1] os[2] 로 전역변수 셋팅.
 
-	os.Setenv("port", "3001")
-	os.Setenv("grpc_port", "50001")
+	portNum := flag.String("port", "3001", "port number")
+	grpcPortNum := flag.String("grpc_port", "50001", "grpc_port number")
 
-	service.ListenContractEvent()
+	flag.Parse()
+
+	os.Setenv("port", *portNum)
+	os.Setenv("grpc_port", *grpcPortNum)
+
+	//service.ListenContractEvent()
 	//startGrpcServer()
 	//startClientWebServer()
 
