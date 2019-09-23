@@ -3,25 +3,25 @@ package controller
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
-		"github.com/sslab-instapay/instapay-go-client/repository"
+	"github.com/sslab-instapay/instapay-go-client/repository"
 	"log"
-		"strconv"
+	"strconv"
 	"github.com/sslab-instapay/instapay-go-client/service"
-		)
+					)
 
-func OpenChannelHandler(context *gin.Context)  {
+func OpenChannelHandler(ctx *gin.Context) {
 	//channelName := context.PostForm("ch_name")
-	otherAddress := context.PostForm("other_addr")
-	deposit, _ := strconv.Atoi(context.PostForm("deposit"))
+	otherAddress := ctx.PostForm("other_addr")
+	deposit, _ := strconv.Atoi(ctx.PostForm("deposit"))
 
 	service.SendOpenChannelTransaction(deposit, otherAddress)
 
-	context.JSON(http.StatusOK, gin.H{"message": "Channel"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "Channel"})
 }
 
 // TODO 데모 시나리오 이후 구현
-func DepositChannelHandler(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{"message": "Channel"})
+func DepositChannelHandler(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"message": "Channel"})
 }
 
 func DirectPayChannelHandler(context *gin.Context) {
@@ -51,39 +51,54 @@ func DirectPayChannelHandler(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{"message": "Channel"})
 }
 
-func CloseChannelHandler(context *gin.Context) {
-	channelIdParam := context.PostForm("channelId")
+func CloseChannelHandler(ctx *gin.Context) {
+	channelIdParam := ctx.PostForm("channelId")
 	log.Println(channelIdParam)
 	channelId, _ := strconv.Atoi(channelIdParam)
 	log.Println(channelId)
 
 	service.SendCloseChannelTransaction(int64(channelId))
 
-	context.JSON(http.StatusOK, gin.H{"message": "Channel"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "Channel"})
 }
 
-func PaymentToServerChannelHandler(context *gin.Context) {
-
-	//otherAddress := context.PostForm("addr")
-	//amount, err := strconv.Atoi(context.PostForm("amount"))
+func PaymentToServerChannelHandler(ctx *gin.Context) {
+	//
+	//otherAddress := ctx.PostForm("addr")
+	//amount, err := strconv.Atoi(ctx.PostForm("amount"))
 	//if err != nil {
 	//	log.Println(err)
 	//}
-	//
+	////
 	//myAddress := config.GetAccountConfig()
-	//TODO Server의 GRPC 호출
+	////TODO Server의 GRPC 호출
+	//
+	//connection, err := grpc.Dial(config.EthereumConfig["serverGrpcHost"]+":"+config.EthereumConfig["serverGrpcPort"], grpc.WithInsecure())
+	//if err != nil {
+	//	log.Println("did not connect: %v", err)
+	//}
+	//defer connection.Close()
+	//client := pb.NewClientClient(connection)
+	//
+	//clientContext, cancel := context.WithTimeout(context.Background(), time.Second)
+	//defer cancel()
+	//r, err := client.SayHello(client_context, &pb.HelloRequest{Name: name})
+	//if err != nil {
+	//	log.Fatalf("could not greet: %v", err)
+	//}
+	//log.Printf("Greeting: %s", r.GetMessage())
 
-	context.JSON(http.StatusOK, gin.H{"message": "Channel"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "Channel"})
 }
 
-func GetChannelListHandler(context *gin.Context){
+func GetChannelListHandler(ctx *gin.Context) {
 
 	channelList, err := repository.GetChannelList()
 	if err != nil {
 		log.Println(err)
 	}
 
-	context.JSON(http.StatusOK, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"channels": channelList,
 	})
 }

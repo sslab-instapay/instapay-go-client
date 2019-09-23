@@ -80,38 +80,38 @@ func SendCloseChannelTransaction(channelId int64) {
 
 	client, err := ethclient.Dial("ws://" + config.EthereumConfig["wsHost"] + ":" + config.EthereumConfig["wsPort"])
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// loading instapay contract on the blockchain
 	address := common.HexToAddress(config.GetAccountConfig().PublicKeyAddress) // change to correct address
 	instance, err := instapay.NewContract(address, client)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// loading my public key, nonce and gas price
 	privateKey, err := crypto.HexToECDSA(config.GetAccountConfig().PrivateKey)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
-		log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
+		log.Println("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
 	}
 
 	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
 
 	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	gasPrice, err := client.SuggestGasPrice(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	// composing a transaction
@@ -125,7 +125,7 @@ func SendCloseChannelTransaction(channelId int64) {
 	otherBalance := channel.MyDeposit - channel.MyBalance
 	tx, err := instance.CloseChannel(auth, big.NewInt(channelId), big.NewInt(int64(otherBalance)), big.NewInt(int64(channel.MyBalance)))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	fmt.Printf("tx sent: %s\n", tx.Hash().Hex())
@@ -134,7 +134,7 @@ func SendCloseChannelTransaction(channelId int64) {
 func ListenContractEvent() {
 	client, err := ethclient.Dial("ws://" + config.EthereumConfig["wsHost"] + ":" + config.EthereumConfig["wsPort"])
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	contractAddress := common.HexToAddress(config.EthereumConfig["contractAddr"])
 
@@ -146,18 +146,18 @@ func ListenContractEvent() {
 
 	sub, err := client.SubscribeFilterLogs(context.Background(), query, logs)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	contractAbi, err := abi.JSON(strings.NewReader(string(instapay.ContractABI)))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
 	for {
 		select {
 		case err := <-sub.Err():
-			log.Fatal(err)
+			log.Println(err)
 		case vLog := <-logs:
 			var createChannelEvent = model.CreateChannelEvent{}
 			var closeChannelEvent = model.CloseChannelEvent{}
@@ -198,13 +198,13 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 	if event.Receiver.String() == config.GetAccountConfig().PublicKeyAddress {
 		var channel = model.Channel{ChannelId: event.Id.Int64(), Type: model.IN,
 			Status: model.IDLE, MyAddress: event.Receiver.String(),
-			MyBalance: 0, MyDeposit: 0, OtherAddress: event.Owner.String()}
+			MyBalance: 0, MyDeposit: 0, OtherDeposit: event.Deposit.Int64(), OtherAddress: event.Owner.String()}
 		repository.InsertChannel(channel)
 	} else {
 		// 아웃 채널
 		var channel = model.Channel{ChannelId: event.Id.Int64(), Type: model.OUT,
 			Status: model.IDLE, MyAddress: event.Owner.String(),
-			MyBalance: event.Deposit.Int64(), MyDeposit: event.Deposit.Int64(), OtherAddress: event.Receiver.String()}
+			MyBalance: event.Deposit.Int64(), MyDeposit: event.Deposit.Int64(), OtherDeposit: 0, OtherAddress: event.Receiver.String()}
 		repository.InsertChannel(channel)
 	}
 

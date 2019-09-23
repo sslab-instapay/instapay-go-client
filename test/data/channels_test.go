@@ -65,7 +65,9 @@ func TestUpdateChannel(t *testing.T){
 }
 
 func TestInsertChannel(t *testing.T){
-	channel := model.Channel{ChannelId: 1, Status: model.IDLE, MyAddress: config.GetAccountConfig().PublicKeyAddress,}
+	channel := model.Channel{ChannelId: 1, Type: model.OUT,
+		Status: model.IDLE, MyAddress: config.GetAccountConfig().PublicKeyAddress,
+		MyBalance: 100, MyDeposit: 100, OtherDeposit: 0, OtherAddress: "0xD03A2CC08755eC7D75887f0997195654b928893e"}
 
 	insertedChannel, err := repository.InsertChannel(channel)
 
