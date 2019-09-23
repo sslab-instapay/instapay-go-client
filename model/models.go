@@ -49,12 +49,12 @@ type CreateChannelEvent struct {
 }
 
 type CloseChannelEvent struct {
-	Id              *big.Int
-	OwnerBalance    *big.Int
-	ReceiverBalance *big.Int
+	Id          *big.Int
+	Ownerbal    *big.Int
+	Receiverbal *big.Int
 }
 
 type EjectEvent struct {
-	PaymentNum *big.Int
-	Stage      int
+	Pn              *big.Int
+	Registeredstage int
 }

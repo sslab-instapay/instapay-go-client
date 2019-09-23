@@ -2,10 +2,13 @@ package config
 
 import (
 	"github.com/sslab-instapay/instapay-go-client/model"
+	"strconv"
+	"os"
 )
 
 // TODO Enclave에서 포트에 따라 어카운트 주소 불러와야함
-func GetAccountConfig(port int) model.Account {
+func GetAccountConfig() model.Account {
+	port, _ := strconv.Atoi(os.Getenv("port"))
 	if port == 3001{
 		return model.Account{
 			PublicKeyAddress: "0x78902c58006916201F65f52f7834e467877f0500",

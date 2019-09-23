@@ -7,7 +7,7 @@ import (
 	"log"
 		"strconv"
 	"github.com/sslab-instapay/instapay-go-client/service"
-				)
+		)
 
 func OpenChannelHandler(context *gin.Context)  {
 	//channelName := context.PostForm("ch_name")
@@ -53,7 +53,9 @@ func DirectPayChannelHandler(context *gin.Context) {
 
 func CloseChannelHandler(context *gin.Context) {
 	channelIdParam := context.PostForm("channelId")
+	log.Println(channelIdParam)
 	channelId, _ := strconv.Atoi(channelIdParam)
+	log.Println(channelId)
 
 	service.SendCloseChannelTransaction(int64(channelId))
 
@@ -64,11 +66,13 @@ func PaymentToServerChannelHandler(context *gin.Context) {
 
 	//otherAddress := context.PostForm("addr")
 	//amount, err := strconv.Atoi(context.PostForm("amount"))
-	//TODO 주소정보 셋팅
-	//address := config.GetAccountConfig(1111)
 	//if err != nil {
-	//	log.Fatal(err)
+	//	log.Println(err)
 	//}
+	//
+	//myAddress := config.GetAccountConfig()
+	//TODO Server의 GRPC 호출
+
 
 	context.JSON(http.StatusOK, gin.H{"message": "Channel"})
 }

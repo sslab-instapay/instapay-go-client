@@ -8,11 +8,9 @@ import (
 	"math/big"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"strconv"
-	instapay "github.com/sslab-instapay/instapay-go-client/contract"
+		instapay "github.com/sslab-instapay/instapay-go-client/contract"
 	"github.com/sslab-instapay/instapay-go-client/config"
-	"os"
-	"context"
+		"context"
 	"fmt"
 	"github.com/sslab-instapay/instapay-go-client/repository"
 	"github.com/sslab-instapay/instapay-go-client/model"
@@ -30,16 +28,15 @@ func SendOpenChannelTransaction(deposit int, otherAddress string) {
 		log.Fatal(err)
 	}
 
-	portNum, _ := strconv.Atoi(os.Getenv("port"))
 	// loading instapay contract on the blockchain
-	address := common.HexToAddress(config.GetAccountConfig(portNum).PublicKeyAddress)  // change to correct address
+	address := common.HexToAddress(config.GetAccountConfig().PublicKeyAddress) // change to correct address
 	instance, err := instapay.NewContract(address, client)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// loading my public key, nonce and gas price
-	privateKey, err := crypto.HexToECDSA(config.GetAccountConfig(portNum).PrivateKey)
+	privateKey, err := crypto.HexToECDSA(config.GetAccountConfig().PrivateKey)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -66,7 +63,7 @@ func SendOpenChannelTransaction(deposit int, otherAddress string) {
 	auth := bind.NewKeyedTransactor(privateKey)
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(int64(deposit * 10000000000)) // in wei
-	auth.GasLimit = uint64(2000000) // in units
+	auth.GasLimit = uint64(2000000)                       // in units
 	auth.GasPrice = gasPrice
 
 	receiver := common.HexToAddress(otherAddress)
@@ -79,23 +76,22 @@ func SendOpenChannelTransaction(deposit int, otherAddress string) {
 	fmt.Printf("tx sent: %s\n", tx.Hash().Hex())
 }
 
-func SendCloseChannelTransaction(channelId int64){
+func SendCloseChannelTransaction(channelId int64) {
 
 	client, err := ethclient.Dial("ws://" + config.EthereumConfig["wsHost"] + ":" + config.EthereumConfig["wsPort"])
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	portNum, _ := strconv.Atoi(os.Getenv("port"))
 	// loading instapay contract on the blockchain
-	address := common.HexToAddress(config.GetAccountConfig(portNum).PublicKeyAddress)  // change to correct address
+	address := common.HexToAddress(config.GetAccountConfig().PublicKeyAddress) // change to correct address
 	instance, err := instapay.NewContract(address, client)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// loading my public key, nonce and gas price
-	privateKey, err := crypto.HexToECDSA(config.GetAccountConfig(portNum).PrivateKey)
+	privateKey, err := crypto.HexToECDSA(config.GetAccountConfig().PrivateKey)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -125,11 +121,9 @@ func SendCloseChannelTransaction(channelId int64){
 	auth.GasPrice = gasPrice
 
 	channel, err := repository.GetChannelById(channelId)
-
+	//TODO other Balance MyBalance 계산
 	otherBalance := channel.MyDeposit - channel.MyBalance
-
-	//TODO 밸런스 단위 맞추기 및 소수점 어떻게 볼 것인지 논의
-	tx, err := instance.CloseChannel(auth, big.NewInt(channelId), big.NewInt(int64(otherBalance)) , big.NewInt(int64(channel.MyBalance)))
+	tx, err := instance.CloseChannel(auth, big.NewInt(channelId), big.NewInt(int64(otherBalance)), big.NewInt(int64(channel.MyBalance)))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -171,19 +165,27 @@ func ListenContractEvent() {
 
 			err := contractAbi.Unpack(&createChannelEvent, "EventCreateChannel", vLog.Data)
 			if err == nil {
-				log.Print("CreateChannel Event Emission")
+				log.Println("CreateChannel Event Emission")
+				fmt.Printf("Channel ID       : %d\n", createChannelEvent.Id)
+				fmt.Printf("Channel Onwer    : %s\n", createChannelEvent.Owner.Hex())
+				fmt.Printf("Channel Receiver : %s\n", createChannelEvent.Receiver.Hex())
+				fmt.Printf("Channel Deposit  : %d\n", createChannelEvent.Deposit)
 				HandleCreateChannelEvent(createChannelEvent)
 			}
 
 			err = contractAbi.Unpack(&closeChannelEvent, "EventCloseChannel", vLog.Data)
 			if err == nil {
 				log.Print("CloseChannel Event Emission")
+				fmt.Printf("Channel ID       : %d\n", closeChannelEvent.Id)
+				fmt.Printf("Owner Balance    : %d\n", closeChannelEvent.Ownerbal)
+				fmt.Printf("Receiver Balance : %d\n", closeChannelEvent.Receiverbal)
 				HandleCloseChannelEvent(closeChannelEvent)
 			}
 
 			err = contractAbi.Unpack(&ejectEvent, "EventEject", vLog.Data)
 			if err == nil {
-
+				fmt.Printf("Payment Number   : %d\n", ejectEvent.Pn)
+				fmt.Printf("Stage            : %d\n", ejectEvent.Registeredstage)
 			}
 
 		}
@@ -192,27 +194,18 @@ func ListenContractEvent() {
 
 func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 
-	// TODO 상대편의 port와 ip를 요청하는 grpc 서버 콜을 추가해야함.
-	portNum, err := strconv.Atoi(os.Getenv("port"))
-
-	if err != nil{
-		log.Println(err)
-	}
-
-	if event.Receiver.String() == config.GetAccountConfig(portNum).PublicKeyAddress {
+	if event.Receiver.String() == config.GetAccountConfig().PublicKeyAddress {
 		var channel = model.Channel{ChannelId: event.Id.Int64(), ChannelName: "Random",
 			Status: model.IDLE, MyAddress: event.Receiver.String(),
 			MyBalance: 0, MyDeposit: 0, OtherAddress: event.Owner.String()}
 
 		repository.InsertChannel(channel)
-	}else{
+	} else {
 		var channel = model.Channel{ChannelId: event.Id.Int64(), ChannelName: "Random",
 			Status: model.IDLE, MyAddress: event.Receiver.String(),
 			MyBalance: event.Deposit.Int64(), MyDeposit: 0, OtherAddress: event.Owner.String()}
 		repository.InsertChannel(channel)
 	}
-
-
 
 }
 
@@ -234,8 +227,7 @@ func HandleEjectEvent(event model.EjectEvent) {
 
 func GetBalance() big.Float {
 
-	port, _ := strconv.Atoi(os.Getenv("port"))
-	account := common.HexToAddress(config.GetAccountConfig(port).PublicKeyAddress)
+	account := common.HexToAddress(config.GetAccountConfig().PublicKeyAddress)
 	client, err := ethclient.Dial("ws://" + config.EthereumConfig["wsHost"] + ":" + config.EthereumConfig["wsPort"])
 
 	if err != nil {
@@ -255,4 +247,3 @@ func GetBalance() big.Float {
 
 	return *ethValue
 }
-

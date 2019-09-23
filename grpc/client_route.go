@@ -26,7 +26,7 @@ func (s *ClientGrpc) AgreementRequest(ctx context.Context, in *pb.AgreeRequestsM
 
 		_, err = repository.UpdateChannel(channel)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 		// PaymentData 삽입
 		repository.InsertPaymentData(model.PaymentData{PaymentNumber: in.PaymentNumber, ChannelId: channelPayment.ChannelId, Amount: in.Amount})

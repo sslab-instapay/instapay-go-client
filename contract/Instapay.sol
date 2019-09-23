@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.4.23;
 
 contract InstaPay {
     enum ChannelStatus {CLOSED, OPEN}
@@ -22,8 +22,8 @@ contract InstaPay {
     mapping (uint256 => Ejection) public ejections;
 
     event EventCreateChannel(uint256 id, address owner, address receiver, uint256 deposit);
-    event EventCloseChannel(uint256 id, uint256 owner_bal, uint256 receiver_bal);
-    event EventEject(uint256 pn, Stage registered_stage);
+    event EventCloseChannel(uint256 id, uint256 ownerbal, uint256 receiverbal);
+    event EventEject(uint256 pn, Stage registeredstage);
 
     modifier onlyOwnerOrReceiver(uint256 id, address sender) {
         require(channels[id].owner == sender || channels[id].receiver == sender);

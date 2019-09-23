@@ -11,7 +11,8 @@ import (
 	"github.com/sslab-instapay/instapay-go-client/router"
 	"os"
 	"strconv"
-	)
+	"github.com/sslab-instapay/instapay-go-client/service"
+)
 
 func startGrpcServer(){
 	grpcPort, err := strconv.Atoi(os.Getenv("grpc_port"))
@@ -42,9 +43,9 @@ func main() {
 	os.Setenv("port", "3001")
 	os.Setenv("grpc_port", "50001")
 
-	//go service.ListenContractEvent()
-	//go startGrpcServer()
-	startClientWebServer()
+	service.ListenContractEvent()
+	//startGrpcServer()
+	//startClientWebServer()
 
 }
 

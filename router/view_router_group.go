@@ -5,11 +5,8 @@ import (
 	"net/http"
 	"log"
 		"github.com/sslab-instapay/instapay-go-client/repository"
-	"github.com/sslab-instapay/instapay-go-client/model"
-	"github.com/sslab-instapay/instapay-go-client/config"
-	"os"
-	"strconv"
-)
+		"github.com/sslab-instapay/instapay-go-client/config"
+		)
 
 func RegisterViewRouter(router *gin.Engine) {
 
@@ -18,8 +15,7 @@ func RegisterViewRouter(router *gin.Engine) {
 		// account 리스트
 		viewRouter.GET("accounts/list", func(context *gin.Context) {
 			//gin.H 부분에서 변수 다루는 것.
-			// TODO 고치기
-			account := model.Account{ PublicKeyAddress: "0xasdnfosaf", PrivateKey: "0xqweiqwjt" }
+			account := config.GetAccountConfig()
 			context.HTML(http.StatusOK, "account.tmpl", gin.H{
 				"account": account,
 			})
@@ -36,8 +32,7 @@ func RegisterViewRouter(router *gin.Engine) {
 
 		// channel 오픈
 		viewRouter.GET("channels/open", func(context *gin.Context) {
-			port, _ := strconv.Atoi(os.Getenv("port"))
-			account := config.GetAccountConfig(port)
+			account := config.GetAccountConfig()
 			context.HTML(http.StatusOK, "openChannel.tmpl", gin.H{"account": account})
 		})
 

@@ -128,7 +128,6 @@ func GetClosedChannelList() ([]model.Channel, error) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		// To get the raw bson bytes use cursor.Current
 		channels = append(channels, channel)
 	}
 
