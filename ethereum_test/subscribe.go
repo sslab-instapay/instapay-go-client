@@ -96,7 +96,7 @@ func main() {
 
 func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 
-	var channel = model.Channel{ChannelId: event.Id.Int64(), ChannelName: "Random",
+	var channel = model.Channel{ChannelId: event.Id.Int64(),
 		Status: model.IDLE, MyAddress: event.Receiver.String(),
 		MyBalance: 0, MyDeposit: 0, OtherAddress: event.Owner.String()}
 

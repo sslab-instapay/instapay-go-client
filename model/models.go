@@ -21,6 +21,13 @@ const (
 	CLOSED                    = "CLOSED"
 )
 
+type ChannelType string
+
+const (
+	IN  ChannelType = "IN"
+	OUT             = "OUT"
+)
+
 type PaymentData struct {
 	PaymentNumber int64 `bson:"paymentNumber"`
 	ChannelId     int64 `bson:"channelId"`
@@ -29,14 +36,14 @@ type PaymentData struct {
 
 type Channel struct {
 	ChannelId     int64         `bson:"channelId"`
-	ChannelName   string        `bson:"channelName"`
+	Type          ChannelType   `bson:"channelType"`
 	Status        ChannelStatus `bson:"channelStatus"`
 	MyAddress     string        `bson:"myAddress"`
 	MyDeposit     int64         `bson:"myDeposit"`
+	OtherDeposit  int64         `bson:"otherDeposit"`
 	MyBalance     int64         `bson:"myBalance"`
 	LockedBalance int64         `bson:"lockedBalance"`
 	OtherAddress  string        `bson:"otherAddress"`
-	VersionNumber int           `bson:"versionNumber"`
 	OtherIp       int           `bson:"otherIp"`
 	OtherPort     int           `bson:"otherPort"`
 }

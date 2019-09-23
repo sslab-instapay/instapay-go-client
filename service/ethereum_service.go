@@ -8,9 +8,9 @@ import (
 	"math/big"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
-		instapay "github.com/sslab-instapay/instapay-go-client/contract"
+	instapay "github.com/sslab-instapay/instapay-go-client/contract"
 	"github.com/sslab-instapay/instapay-go-client/config"
-		"context"
+	"context"
 	"fmt"
 	"github.com/sslab-instapay/instapay-go-client/repository"
 	"github.com/sslab-instapay/instapay-go-client/model"
@@ -194,16 +194,17 @@ func ListenContractEvent() {
 
 func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 
+	// 내가 리시버 즉 IN 채널
 	if event.Receiver.String() == config.GetAccountConfig().PublicKeyAddress {
-		var channel = model.Channel{ChannelId: event.Id.Int64(), ChannelName: "Random",
+		var channel = model.Channel{ChannelId: event.Id.Int64(), Type: model.IN,
 			Status: model.IDLE, MyAddress: event.Receiver.String(),
 			MyBalance: 0, MyDeposit: 0, OtherAddress: event.Owner.String()}
-
 		repository.InsertChannel(channel)
 	} else {
-		var channel = model.Channel{ChannelId: event.Id.Int64(), ChannelName: "Random",
-			Status: model.IDLE, MyAddress: event.Receiver.String(),
-			MyBalance: event.Deposit.Int64(), MyDeposit: 0, OtherAddress: event.Owner.String()}
+		// 아웃 채널
+		var channel = model.Channel{ChannelId: event.Id.Int64(), Type: model.OUT,
+			Status: model.IDLE, MyAddress: event.Owner.String(),
+			MyBalance: event.Deposit.Int64(), MyDeposit: event.Deposit.Int64(), OtherAddress: event.Receiver.String()}
 		repository.InsertChannel(channel)
 	}
 
@@ -214,7 +215,6 @@ func HandleCloseChannelEvent(event model.CloseChannelEvent) {
 
 	if err != nil {
 		log.Println("there is no channel")
-		return
 	}
 
 	channel.Status = model.CLOSED

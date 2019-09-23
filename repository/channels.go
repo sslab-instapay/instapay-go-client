@@ -39,7 +39,7 @@ func GetChannelList() ([]model.Channel, error) {
 	return channels, nil
 }
 
-func GetAllChannelsLockedBalance() (int64, error){
+func GetAllChannelsLockedBalance() (int64, error) {
 
 	database, err := db.GetDatabase()
 	if err != nil {
@@ -190,7 +190,7 @@ func GetChannelById(channelId int64) (model.Channel, error) {
 	return channel, nil
 }
 
-func UpdateChannel(channel model.Channel) (model.Channel, error){
+func UpdateChannel(channel model.Channel) (model.Channel, error) {
 
 	database, err := db.GetDatabase()
 	if err != nil {
@@ -200,14 +200,12 @@ func UpdateChannel(channel model.Channel) (model.Channel, error){
 	collection := database.Collection("channels")
 
 	filter := bson.M{"channelId": channel.ChannelId}
-	update := bson.M{"$set": bson.M{"channelName": channel.ChannelName, "channelStatus": channel.Status,
-	"myBalance": channel.MyBalance, "otherAddress": channel.OtherAddress, "otherPort": channel.OtherPort, }}
+	update := bson.M{"$set": bson.M{"channelStatus": channel.Status, "myBalance": channel.MyBalance, "otherAddress": channel.OtherAddress, "otherPort": channel.OtherPort, "otherIp": channel.OtherIp, "lockedBalance": channel.LockedBalance}}
 
 	res, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		log.Fatal(err)
 	}
-
 
 	fmt.Println(res.ModifiedCount)
 
@@ -215,7 +213,7 @@ func UpdateChannel(channel model.Channel) (model.Channel, error){
 
 }
 
-func InsertChannel(channel model.Channel) (model.Channel, error){
+func InsertChannel(channel model.Channel) (model.Channel, error) {
 
 	database, err := db.GetDatabase()
 	if err != nil {

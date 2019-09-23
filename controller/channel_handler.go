@@ -73,7 +73,6 @@ func PaymentToServerChannelHandler(context *gin.Context) {
 	//myAddress := config.GetAccountConfig()
 	//TODO Server의 GRPC 호출
 
-
 	context.JSON(http.StatusOK, gin.H{"message": "Channel"})
 }
 
@@ -81,7 +80,7 @@ func GetChannelListHandler(context *gin.Context){
 
 	channelList, err := repository.GetChannelList()
 	if err != nil {
-		log.Fatal(channelList)
+		log.Println(err)
 	}
 
 	context.JSON(http.StatusOK, gin.H{
