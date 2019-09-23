@@ -7,6 +7,8 @@ import (
 		"github.com/sslab-instapay/instapay-go-client/repository"
 	"github.com/sslab-instapay/instapay-go-client/model"
 	"github.com/sslab-instapay/instapay-go-client/config"
+	"os"
+	"strconv"
 )
 
 func RegisterViewRouter(router *gin.Engine) {
@@ -34,7 +36,8 @@ func RegisterViewRouter(router *gin.Engine) {
 
 		// channel 오픈
 		viewRouter.GET("channels/open", func(context *gin.Context) {
-			account := config.GetAccountConfig(1111)
+			port, _ := strconv.Atoi(os.Getenv("port"))
+			account := config.GetAccountConfig(port)
 			context.HTML(http.StatusOK, "openChannel.tmpl", gin.H{"account": account})
 		})
 

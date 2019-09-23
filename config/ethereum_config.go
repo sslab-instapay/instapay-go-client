@@ -12,9 +12,11 @@ import (
 	"math/big"
 	instapay "github.com/sslab-instapay/instapay-go-client/contract"
 	"math"
-		"github.com/sslab-instapay/instapay-go-client/model"
+	"github.com/sslab-instapay/instapay-go-client/model"
 	"github.com/sslab-instapay/instapay-go-client/repository"
-	)
+	"strconv"
+	"os"
+)
 
 var EthereumConfig = map[string]string{
 	/* web3 and ethereum */
@@ -36,10 +38,6 @@ var EthereumConfig = map[string]string{
 	"receiver":       "",
 }
 
-type EthereumService struct {
-	Port string
-}
-
 type CreateChannelEvent struct {
 	Id       *big.Int
 	Owner    common.Address
@@ -47,7 +45,7 @@ type CreateChannelEvent struct {
 	Deposit  *big.Int
 }
 
-type CloseChannelEvent struct{
+type CloseChannelEvent struct {
 	Id              *big.Int
 	OwnerBalance    *big.Int
 	ReceiverBalance *big.Int
@@ -113,9 +111,10 @@ func ListenContractEvent() {
 
 func HandleCreateChannelEvent(event CreateChannelEvent) {
 
+	// TODO 상대편의 port와 ip를 요청하는 grpc 서버 콜을 추가해야함.
 	var channel = model.Channel{ChannelId: event.Id.Int64(), ChannelName: "Random",
 		Status: model.IDLE, MyAddress: event.Receiver.String(),
-		MyBalance: 0, MyDeposit: 0, OtherAddress: event.Owner.String() }
+		MyBalance: 0, MyDeposit: 0, OtherAddress: event.Owner.String()}
 
 	repository.InsertChannel(channel)
 }
@@ -129,19 +128,16 @@ func HandleCloseChannelEvent(event CloseChannelEvent) {
 	}
 
 	channel.Status = model.CLOSED
-
-
 	repository.UpdateChannel(channel)
-
 }
 
 func HandleEjectEvent(event EjectEvent) {
 	//TODO
 }
 
-func (service EthereumService) GetBalance() big.Float {
-
-	account := common.HexToAddress(GetAccountConfig(service.Port).PublicKeyAddress)
+func GetBalance() big.Float {
+	port, _ := strconv.Atoi(os.Getenv("port"))
+	account := common.HexToAddress(GetAccountConfig(port).PublicKeyAddress)
 	client, err := ethclient.Dial("ws://" + EthereumConfig["wsHost"] + ":" + EthereumConfig["wsPort"])
 
 	if err != nil {
@@ -161,7 +157,7 @@ func (service EthereumService) GetBalance() big.Float {
 	return *ethValue
 }
 
-func (service EthereumService) SendOpenChannelTransaction() {
+func SendOpenChannelTransaction() {
 
 	//account := GetAccountConfig(service.Port)
 	//privateKey := common.HexToAddress(account.PrivateKey)

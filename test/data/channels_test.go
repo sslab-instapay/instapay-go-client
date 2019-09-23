@@ -40,7 +40,7 @@ func TestGetOpenedChannelList(t *testing.T){
 }
 
 func TestGetChannelById(t *testing.T){
-	channel, err := repository.GetChannelById(1)
+	channel, err := repository.GetChannelById(2)
 
 	if err != nil{
 		log.Fatal(err)
@@ -54,7 +54,7 @@ func TestUpdateChannel(t *testing.T){
 		log.Fatal(err)
 	}
 	
-	channel.OtherPort = 1111
+	channel.OtherPort = 3002
 	updatedChannel, err := repository.UpdateChannel(channel)
 
 	if err != nil {
@@ -65,7 +65,7 @@ func TestUpdateChannel(t *testing.T){
 }
 
 func TestInsertChannel(t *testing.T){
-	channel := model.Channel{ChannelId: 1, ChannelName: "hoonki", Status: model.IDLE, MyAddress: config.GetAccountConfig("3001").PublicKeyAddress,}
+	channel := model.Channel{ChannelId: 1, ChannelName: "hoonki", Status: model.IDLE, MyAddress: config.GetAccountConfig(3001).PublicKeyAddress,}
 
 	insertedChannel, err := repository.InsertChannel(channel)
 
