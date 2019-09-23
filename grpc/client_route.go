@@ -9,48 +9,66 @@ import (
 )
 
 type ClientGrpc struct {
+
 }
 
 func (s *ClientGrpc) AgreementRequest(ctx context.Context, in *pb.AgreeRequestsMessage) (*pb.Result, error) {
 	// 동의한다는 메시지를 전달
-	channelIds := in.GetChannelIds()
+	channelPayments := in.ChannelPayments
 
-	for channelId := range channelIds.ChannelIds {
-		channel, err := repository.GetChannelById(int64(channelId))
+	for _, channelPayment := range channelPayments.ChannelPayments {
+
+		channel, err := repository.GetChannelById(channelPayment.ChannelId)
 
 		// update 채널 status 및 locked Balance
 		channel.Status = model.PRE_UPDATE
-		channel.LockedBalance = in.Amount
+		channel.LockedBalance += in.Amount
 
 		_, err = repository.UpdateChannel(channel)
 		if err != nil {
 			log.Fatal(err)
 		}
+		// PaymentData 삽입
+		repository.InsertPaymentData(model.PaymentData{PaymentNumber: in.PaymentNumber, ChannelId: channelPayment.ChannelId, Amount: in.Amount})
 	}
-	return &pb.Result{}, nil
+	return &pb.Result{PaymentNumber: in.PaymentNumber, Result: true}, nil
 }
 
 func (s *ClientGrpc) UpdateRequest(ctx context.Context, in *pb.UpdateRequestsMessage) (*pb.Result, error) {
 	// 채널 정보를 업데이트 한다던지 잔액을 변경.
-	channelIds := in.GetChannelIds()
+	channelPayments := in.ChannelPayments
 
-	for channelId := range channelIds.ChannelIds {
+	for _, channelPayment := range channelPayments.ChannelPayments {
 
-		channel, err := repository.GetChannelById(int64(channelId))
-
-		// update 채널 status 및 locked Balance
+		channel, err := repository.GetChannelById(channelPayment.ChannelId)
 		channel.Status = model.POST_UPDATE
 		channel.MyBalance += in.Amount
+		channel.LockedBalance -= in.Amount
 
 		_, err = repository.UpdateChannel(channel)
 		if err != nil {
-			log.Fatal(err)
+			log.Println("Something is wrong")
+			return &pb.Result{}, err
 		}
 	}
-	return &pb.Result{}, nil
+	return &pb.Result{PaymentNumber: in.PaymentNumber, Result: true}, nil
 }
 
 func (s *ClientGrpc) ConfirmPayment(ctx context.Context, in *pb.ConfirmRequestsMessage) (*pb.Result, error) {
-	//페이먼트를 ~~
-	return &pb.Result{}, nil
+	paymentDatas, err := repository.GetPaymentDatasByPaymentId(in.PaymentNumber)
+	if err != nil{
+		return &pb.Result{}, err
+	}
+
+	for _, paymentData := range paymentDatas{
+		channel, err := repository.GetChannelById(paymentData.ChannelId)
+		if err != nil{
+			return &pb.Result{}, err
+		}
+
+		channel.Status = model.IDLE
+		repository.UpdateChannel(channel)
+	}
+
+	return &pb.Result{PaymentNumber: in.PaymentNumber, Result: true}, nil
 }

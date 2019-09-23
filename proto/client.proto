@@ -7,29 +7,31 @@ service Client {
 }
 
 message AgreeRequestsMessage {
-    int32 paymentNumber = 1;
-    ChannelIDs channelIds = 2;
-    float amount = 3;
+    int64 paymentNumber = 1;
+    ChannelPayments channelPayments = 2;
+    int64 amount = 3;
 }
 
 message UpdateRequestsMessage{
-    int32 paymentNumber = 1;
-    ChannelIDs channelIds = 2;
-    float amount = 3;
+    int64 paymentNumber = 1;
+    ChannelPayments channelPayments = 2;
+    int64 amount = 3;
 }
 
 message ConfirmRequestsMessage{
-    int32 paymentNumber = 1;
+    int64 paymentNumber = 1;
 }
 
-message ChannelIDs {
-    message ChannelID {
-        int32 channelId = 1;
-    }
-    repeated ChannelID channelIds = 1;
+message ChannelPayment {
+    int64 channelId = 1;
+    int64 amount = 2;
+}
+
+message ChannelPayments {
+    repeated ChannelPayment channelPayments = 1;
 }
 
 message Result {
-    int32 paymentNumber = 1;
+    int64 paymentNumber = 1;
     bool result = 2;
 }

@@ -87,6 +87,17 @@ func TestGetAllChannelsLockedBalance(t *testing.T){
 	fmt.Println(lockedBalance)
 }
 
+func TestGetPaymentDataByPaymentId(t *testing.T){
+
+	paymentData, err := repository.GetPaymentDatasByPaymentId(1)
+
+	if err != nil{
+		log.Fatal(err)
+	}
+
+	fmt.Println(paymentData)
+}
+
 
 
 

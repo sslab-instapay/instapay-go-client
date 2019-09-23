@@ -21,9 +21,9 @@ func AccountInformationHandler(context *gin.Context) {
 		log.Print(err)
 	}
 
-	convertedBalance, _ := balance.Float32()
+	convertedBalance, _ := balance.Int64()
 
-	totalBalance := convertedBalance - lockedBalance
+	totalBalance := convertedBalance + lockedBalance
 
 	context.JSON(http.StatusOK, gin.H{"address": account.PublicKeyAddress, "balance": totalBalance})
 }

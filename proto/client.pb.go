@@ -25,12 +25,12 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
 type AgreeRequestsMessage struct {
-	PaymentNumber        int32       `protobuf:"varint,1,opt,name=paymentNumber,proto3" json:"paymentNumber,omitempty"`
-	ChannelIds           *ChannelIDs `protobuf:"bytes,2,opt,name=channelIds,proto3" json:"channelIds,omitempty"`
-	Amount               float32     `protobuf:"fixed32,3,opt,name=amount,proto3" json:"amount,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
-	XXX_unrecognized     []byte      `json:"-"`
-	XXX_sizecache        int32       `json:"-"`
+	PaymentNumber        int64            `protobuf:"varint,1,opt,name=paymentNumber,proto3" json:"paymentNumber,omitempty"`
+	ChannelPayments      *ChannelPayments `protobuf:"bytes,2,opt,name=channelPayments,proto3" json:"channelPayments,omitempty"`
+	Amount               int64            `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
 }
 
 func (m *AgreeRequestsMessage) Reset()         { *m = AgreeRequestsMessage{} }
@@ -58,21 +58,21 @@ func (m *AgreeRequestsMessage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_AgreeRequestsMessage proto.InternalMessageInfo
 
-func (m *AgreeRequestsMessage) GetPaymentNumber() int32 {
+func (m *AgreeRequestsMessage) GetPaymentNumber() int64 {
 	if m != nil {
 		return m.PaymentNumber
 	}
 	return 0
 }
 
-func (m *AgreeRequestsMessage) GetChannelIds() *ChannelIDs {
+func (m *AgreeRequestsMessage) GetChannelPayments() *ChannelPayments {
 	if m != nil {
-		return m.ChannelIds
+		return m.ChannelPayments
 	}
 	return nil
 }
 
-func (m *AgreeRequestsMessage) GetAmount() float32 {
+func (m *AgreeRequestsMessage) GetAmount() int64 {
 	if m != nil {
 		return m.Amount
 	}
@@ -80,12 +80,12 @@ func (m *AgreeRequestsMessage) GetAmount() float32 {
 }
 
 type UpdateRequestsMessage struct {
-	PaymentNumber        int32       `protobuf:"varint,1,opt,name=paymentNumber,proto3" json:"paymentNumber,omitempty"`
-	ChannelIds           *ChannelIDs `protobuf:"bytes,2,opt,name=channelIds,proto3" json:"channelIds,omitempty"`
-	Amount               float32     `protobuf:"fixed32,3,opt,name=amount,proto3" json:"amount,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}    `json:"-"`
-	XXX_unrecognized     []byte      `json:"-"`
-	XXX_sizecache        int32       `json:"-"`
+	PaymentNumber        int64            `protobuf:"varint,1,opt,name=paymentNumber,proto3" json:"paymentNumber,omitempty"`
+	ChannelPayments      *ChannelPayments `protobuf:"bytes,2,opt,name=channelPayments,proto3" json:"channelPayments,omitempty"`
+	Amount               int64            `protobuf:"varint,3,opt,name=amount,proto3" json:"amount,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}         `json:"-"`
+	XXX_unrecognized     []byte           `json:"-"`
+	XXX_sizecache        int32            `json:"-"`
 }
 
 func (m *UpdateRequestsMessage) Reset()         { *m = UpdateRequestsMessage{} }
@@ -113,21 +113,21 @@ func (m *UpdateRequestsMessage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_UpdateRequestsMessage proto.InternalMessageInfo
 
-func (m *UpdateRequestsMessage) GetPaymentNumber() int32 {
+func (m *UpdateRequestsMessage) GetPaymentNumber() int64 {
 	if m != nil {
 		return m.PaymentNumber
 	}
 	return 0
 }
 
-func (m *UpdateRequestsMessage) GetChannelIds() *ChannelIDs {
+func (m *UpdateRequestsMessage) GetChannelPayments() *ChannelPayments {
 	if m != nil {
-		return m.ChannelIds
+		return m.ChannelPayments
 	}
 	return nil
 }
 
-func (m *UpdateRequestsMessage) GetAmount() float32 {
+func (m *UpdateRequestsMessage) GetAmount() int64 {
 	if m != nil {
 		return m.Amount
 	}
@@ -135,7 +135,7 @@ func (m *UpdateRequestsMessage) GetAmount() float32 {
 }
 
 type ConfirmRequestsMessage struct {
-	PaymentNumber        int32    `protobuf:"varint,1,opt,name=paymentNumber,proto3" json:"paymentNumber,omitempty"`
+	PaymentNumber        int64    `protobuf:"varint,1,opt,name=paymentNumber,proto3" json:"paymentNumber,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -166,93 +166,101 @@ func (m *ConfirmRequestsMessage) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ConfirmRequestsMessage proto.InternalMessageInfo
 
-func (m *ConfirmRequestsMessage) GetPaymentNumber() int32 {
+func (m *ConfirmRequestsMessage) GetPaymentNumber() int64 {
 	if m != nil {
 		return m.PaymentNumber
 	}
 	return 0
 }
 
-type ChannelIDs struct {
-	ChannelIds           []*ChannelIDs_ChannelID `protobuf:"bytes,1,rep,name=channelIds,proto3" json:"channelIds,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
-	XXX_unrecognized     []byte                  `json:"-"`
-	XXX_sizecache        int32                   `json:"-"`
-}
-
-func (m *ChannelIDs) Reset()         { *m = ChannelIDs{} }
-func (m *ChannelIDs) String() string { return proto.CompactTextString(m) }
-func (*ChannelIDs) ProtoMessage()    {}
-func (*ChannelIDs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_014de31d7ac8c57c, []int{3}
-}
-
-func (m *ChannelIDs) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ChannelIDs.Unmarshal(m, b)
-}
-func (m *ChannelIDs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ChannelIDs.Marshal(b, m, deterministic)
-}
-func (m *ChannelIDs) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ChannelIDs.Merge(m, src)
-}
-func (m *ChannelIDs) XXX_Size() int {
-	return xxx_messageInfo_ChannelIDs.Size(m)
-}
-func (m *ChannelIDs) XXX_DiscardUnknown() {
-	xxx_messageInfo_ChannelIDs.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_ChannelIDs proto.InternalMessageInfo
-
-func (m *ChannelIDs) GetChannelIds() []*ChannelIDs_ChannelID {
-	if m != nil {
-		return m.ChannelIds
-	}
-	return nil
-}
-
-type ChannelIDs_ChannelID struct {
-	ChannelId            int32    `protobuf:"varint,1,opt,name=channelId,proto3" json:"channelId,omitempty"`
+type ChannelPayment struct {
+	ChannelId            int64    `protobuf:"varint,1,opt,name=channelId,proto3" json:"channelId,omitempty"`
+	Amount               int64    `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *ChannelIDs_ChannelID) Reset()         { *m = ChannelIDs_ChannelID{} }
-func (m *ChannelIDs_ChannelID) String() string { return proto.CompactTextString(m) }
-func (*ChannelIDs_ChannelID) ProtoMessage()    {}
-func (*ChannelIDs_ChannelID) Descriptor() ([]byte, []int) {
-	return fileDescriptor_014de31d7ac8c57c, []int{3, 0}
+func (m *ChannelPayment) Reset()         { *m = ChannelPayment{} }
+func (m *ChannelPayment) String() string { return proto.CompactTextString(m) }
+func (*ChannelPayment) ProtoMessage()    {}
+func (*ChannelPayment) Descriptor() ([]byte, []int) {
+	return fileDescriptor_014de31d7ac8c57c, []int{3}
 }
 
-func (m *ChannelIDs_ChannelID) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_ChannelIDs_ChannelID.Unmarshal(m, b)
+func (m *ChannelPayment) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ChannelPayment.Unmarshal(m, b)
 }
-func (m *ChannelIDs_ChannelID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_ChannelIDs_ChannelID.Marshal(b, m, deterministic)
+func (m *ChannelPayment) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ChannelPayment.Marshal(b, m, deterministic)
 }
-func (m *ChannelIDs_ChannelID) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ChannelIDs_ChannelID.Merge(m, src)
+func (m *ChannelPayment) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ChannelPayment.Merge(m, src)
 }
-func (m *ChannelIDs_ChannelID) XXX_Size() int {
-	return xxx_messageInfo_ChannelIDs_ChannelID.Size(m)
+func (m *ChannelPayment) XXX_Size() int {
+	return xxx_messageInfo_ChannelPayment.Size(m)
 }
-func (m *ChannelIDs_ChannelID) XXX_DiscardUnknown() {
-	xxx_messageInfo_ChannelIDs_ChannelID.DiscardUnknown(m)
+func (m *ChannelPayment) XXX_DiscardUnknown() {
+	xxx_messageInfo_ChannelPayment.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ChannelIDs_ChannelID proto.InternalMessageInfo
+var xxx_messageInfo_ChannelPayment proto.InternalMessageInfo
 
-func (m *ChannelIDs_ChannelID) GetChannelId() int32 {
+func (m *ChannelPayment) GetChannelId() int64 {
 	if m != nil {
 		return m.ChannelId
 	}
 	return 0
 }
 
+func (m *ChannelPayment) GetAmount() int64 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+type ChannelPayments struct {
+	ChannelPayments      []*ChannelPayment `protobuf:"bytes,1,rep,name=channelPayments,proto3" json:"channelPayments,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
+}
+
+func (m *ChannelPayments) Reset()         { *m = ChannelPayments{} }
+func (m *ChannelPayments) String() string { return proto.CompactTextString(m) }
+func (*ChannelPayments) ProtoMessage()    {}
+func (*ChannelPayments) Descriptor() ([]byte, []int) {
+	return fileDescriptor_014de31d7ac8c57c, []int{4}
+}
+
+func (m *ChannelPayments) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ChannelPayments.Unmarshal(m, b)
+}
+func (m *ChannelPayments) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ChannelPayments.Marshal(b, m, deterministic)
+}
+func (m *ChannelPayments) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ChannelPayments.Merge(m, src)
+}
+func (m *ChannelPayments) XXX_Size() int {
+	return xxx_messageInfo_ChannelPayments.Size(m)
+}
+func (m *ChannelPayments) XXX_DiscardUnknown() {
+	xxx_messageInfo_ChannelPayments.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ChannelPayments proto.InternalMessageInfo
+
+func (m *ChannelPayments) GetChannelPayments() []*ChannelPayment {
+	if m != nil {
+		return m.ChannelPayments
+	}
+	return nil
+}
+
 type Result struct {
-	PaymentNumber        int32    `protobuf:"varint,1,opt,name=paymentNumber,proto3" json:"paymentNumber,omitempty"`
+	PaymentNumber        int64    `protobuf:"varint,1,opt,name=paymentNumber,proto3" json:"paymentNumber,omitempty"`
 	Result               bool     `protobuf:"varint,2,opt,name=result,proto3" json:"result,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
@@ -263,7 +271,7 @@ func (m *Result) Reset()         { *m = Result{} }
 func (m *Result) String() string { return proto.CompactTextString(m) }
 func (*Result) ProtoMessage()    {}
 func (*Result) Descriptor() ([]byte, []int) {
-	return fileDescriptor_014de31d7ac8c57c, []int{4}
+	return fileDescriptor_014de31d7ac8c57c, []int{5}
 }
 
 func (m *Result) XXX_Unmarshal(b []byte) error {
@@ -284,7 +292,7 @@ func (m *Result) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Result proto.InternalMessageInfo
 
-func (m *Result) GetPaymentNumber() int32 {
+func (m *Result) GetPaymentNumber() int64 {
 	if m != nil {
 		return m.PaymentNumber
 	}
@@ -302,34 +310,34 @@ func init() {
 	proto.RegisterType((*AgreeRequestsMessage)(nil), "AgreeRequestsMessage")
 	proto.RegisterType((*UpdateRequestsMessage)(nil), "UpdateRequestsMessage")
 	proto.RegisterType((*ConfirmRequestsMessage)(nil), "ConfirmRequestsMessage")
-	proto.RegisterType((*ChannelIDs)(nil), "ChannelIDs")
-	proto.RegisterType((*ChannelIDs_ChannelID)(nil), "ChannelIDs.ChannelID")
+	proto.RegisterType((*ChannelPayment)(nil), "ChannelPayment")
+	proto.RegisterType((*ChannelPayments)(nil), "ChannelPayments")
 	proto.RegisterType((*Result)(nil), "Result")
 }
 
 func init() { proto.RegisterFile("client.proto", fileDescriptor_014de31d7ac8c57c) }
 
 var fileDescriptor_014de31d7ac8c57c = []byte{
-	// 299 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x92, 0xc1, 0x4a, 0xfb, 0x40,
-	0x10, 0xc6, 0xff, 0xdb, 0xf2, 0x8f, 0x76, 0x62, 0x45, 0x16, 0x13, 0x43, 0xf1, 0x10, 0x82, 0x87,
-	0x88, 0xb0, 0x87, 0x58, 0xaf, 0x82, 0x44, 0x04, 0x0f, 0x8a, 0x2c, 0xf8, 0x00, 0xdb, 0x74, 0xac,
-	0x85, 0x64, 0x13, 0xb3, 0x9b, 0x83, 0x47, 0x7d, 0x1a, 0x1f, 0x53, 0x9a, 0x2c, 0xcd, 0x16, 0x72,
-	0x10, 0x2f, 0xde, 0x76, 0x66, 0x76, 0xf8, 0x7e, 0x7c, 0xf3, 0xc1, 0x41, 0x96, 0xaf, 0x51, 0x6a,
-	0x56, 0xd5, 0xa5, 0x2e, 0xa3, 0x0f, 0x02, 0xc7, 0x37, 0xab, 0x1a, 0x91, 0xe3, 0x5b, 0x83, 0x4a,
-	0xab, 0x07, 0x54, 0x4a, 0xac, 0x90, 0x9e, 0xc1, 0xb4, 0x12, 0xef, 0x05, 0x4a, 0xfd, 0xd8, 0x14,
-	0x0b, 0xac, 0x03, 0x12, 0x92, 0xf8, 0x3f, 0xdf, 0x6d, 0xd2, 0x0b, 0x80, 0xec, 0x55, 0x48, 0x89,
-	0xf9, 0xfd, 0x52, 0x05, 0xa3, 0x90, 0xc4, 0x6e, 0xe2, 0xb2, 0xd4, 0xb4, 0x6e, 0x15, 0xb7, 0xc6,
-	0xd4, 0x07, 0x47, 0x14, 0x65, 0x23, 0x75, 0x30, 0x0e, 0x49, 0x3c, 0xe2, 0xa6, 0x8a, 0x3e, 0x09,
-	0x78, 0xcf, 0xd5, 0x52, 0xe8, 0xbf, 0x84, 0xb8, 0x06, 0x3f, 0x2d, 0xe5, 0xcb, 0xba, 0x2e, 0x7e,
-	0x05, 0x11, 0x49, 0x80, 0x5e, 0x91, 0x5e, 0xed, 0x20, 0x91, 0x70, 0x1c, 0xbb, 0x89, 0x67, 0x21,
-	0xf5, 0x4f, 0x1b, 0x6e, 0x76, 0x0e, 0x93, 0xed, 0x80, 0x9e, 0xc2, 0x64, 0x3b, 0x32, 0x9a, 0x7d,
-	0x23, 0xba, 0x03, 0x87, 0xa3, 0x6a, 0x72, 0xfd, 0x43, 0x93, 0x7c, 0x70, 0xea, 0xf6, 0x7f, 0x6b,
-	0xd0, 0x3e, 0x37, 0x55, 0xf2, 0x45, 0xc0, 0x49, 0xdb, 0x44, 0xd0, 0x39, 0x1c, 0x89, 0x4d, 0x14,
-	0x36, 0x5b, 0xc6, 0x04, 0xea, 0xb1, 0xa1, 0x74, 0xcc, 0xf6, 0x58, 0x27, 0x1e, 0xfd, 0xa3, 0x09,
-	0x4c, 0x1b, 0xfb, 0x78, 0xd4, 0x67, 0x83, 0xc7, 0xb4, 0x77, 0xe6, 0x70, 0x98, 0x75, 0x66, 0x3f,
-	0x75, 0x90, 0xf4, 0x84, 0x0d, 0xbb, 0x6f, 0x6d, 0x2d, 0x9c, 0x36, 0xb2, 0x97, 0xdf, 0x01, 0x00,
-	0x00, 0xff, 0xff, 0x08, 0xfb, 0x93, 0x1a, 0xc2, 0x02, 0x00, 0x00,
+	// 301 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x49, 0xce, 0xc9, 0x4c,
+	0xcd, 0x2b, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x57, 0x9a, 0xc0, 0xc8, 0x25, 0xe2, 0x98, 0x5e,
+	0x94, 0x9a, 0x1a, 0x94, 0x5a, 0x58, 0x9a, 0x5a, 0x5c, 0x52, 0xec, 0x9b, 0x5a, 0x5c, 0x9c, 0x98,
+	0x9e, 0x2a, 0xa4, 0xc2, 0xc5, 0x5b, 0x90, 0x58, 0x99, 0x9b, 0x9a, 0x57, 0xe2, 0x57, 0x9a, 0x9b,
+	0x94, 0x5a, 0x24, 0xc1, 0xa8, 0xc0, 0xa8, 0xc1, 0x1c, 0x84, 0x2a, 0x28, 0x64, 0xc5, 0xc5, 0x9f,
+	0x9c, 0x91, 0x98, 0x97, 0x97, 0x9a, 0x13, 0x00, 0x11, 0x2f, 0x96, 0x60, 0x52, 0x60, 0xd4, 0xe0,
+	0x36, 0x12, 0xd0, 0x73, 0x46, 0x15, 0x0f, 0x42, 0x57, 0x28, 0x24, 0xc6, 0xc5, 0x96, 0x98, 0x9b,
+	0x5f, 0x9a, 0x57, 0x22, 0xc1, 0x0c, 0x36, 0x1a, 0xca, 0x53, 0x9a, 0xc8, 0xc8, 0x25, 0x1a, 0x5a,
+	0x90, 0x92, 0x58, 0x32, 0x88, 0xdc, 0x64, 0xc7, 0x25, 0xe6, 0x9c, 0x9f, 0x97, 0x96, 0x59, 0x94,
+	0x4b, 0x96, 0x9b, 0x94, 0xdc, 0xb8, 0xf8, 0x50, 0xed, 0x16, 0x92, 0xe1, 0xe2, 0x84, 0x5a, 0xee,
+	0x99, 0x02, 0xd5, 0x83, 0x10, 0x40, 0x72, 0x07, 0x13, 0x8a, 0x3b, 0x7c, 0xb8, 0xf8, 0xd1, 0xfc,
+	0x20, 0x64, 0x89, 0xe9, 0x5d, 0x46, 0x05, 0x66, 0x0d, 0x6e, 0x23, 0x7e, 0x34, 0xef, 0x62, 0xf8,
+	0x56, 0xc9, 0x8d, 0x8b, 0x2d, 0x28, 0xb5, 0xb8, 0x34, 0xa7, 0x84, 0xc8, 0x90, 0x15, 0xe3, 0x62,
+	0x2b, 0x02, 0xab, 0x07, 0xbb, 0x8a, 0x23, 0x08, 0xca, 0x33, 0x5a, 0xc1, 0xc8, 0xc5, 0xe6, 0x0c,
+	0x4e, 0x55, 0x42, 0x26, 0x5c, 0x02, 0x89, 0xa0, 0xe4, 0x04, 0xb6, 0x10, 0x12, 0x54, 0x42, 0xa2,
+	0x7a, 0xd8, 0x52, 0x98, 0x14, 0xbb, 0x1e, 0xc4, 0x72, 0x25, 0x06, 0x21, 0x23, 0x2e, 0xde, 0x52,
+	0xe4, 0x18, 0x17, 0x12, 0xd3, 0xc3, 0x9a, 0x02, 0x90, 0xf5, 0x98, 0x70, 0xf1, 0x25, 0x43, 0xa2,
+	0x04, 0x16, 0xa4, 0xe2, 0x7a, 0xd8, 0xe3, 0x08, 0x49, 0x57, 0x12, 0x1b, 0x38, 0xd9, 0x1b, 0x03,
+	0x02, 0x00, 0x00, 0xff, 0xff, 0x1f, 0xb6, 0x4a, 0x98, 0x06, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.

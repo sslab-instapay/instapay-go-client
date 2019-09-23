@@ -39,7 +39,7 @@ func GetChannelList() ([]model.Channel, error) {
 	return channels, nil
 }
 
-func GetAllChannelsLockedBalance() (float32, error){
+func GetAllChannelsLockedBalance() (int64, error){
 
 	database, err := db.GetDatabase()
 	if err != nil {
@@ -58,7 +58,7 @@ func GetAllChannelsLockedBalance() (float32, error){
 	if err != nil {
 		return 0, err
 	}
-	var lockedBalance float32
+	var lockedBalance int64
 
 	defer cur.Close(context.Background())
 	for cur.Next(context.Background()) {

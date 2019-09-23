@@ -193,11 +193,27 @@ func ListenContractEvent() {
 func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 
 	// TODO 상대편의 port와 ip를 요청하는 grpc 서버 콜을 추가해야함.
-	var channel = model.Channel{ChannelId: event.Id.Int64(), ChannelName: "Random",
-		Status: model.IDLE, MyAddress: event.Receiver.String(),
-		MyBalance: 0, MyDeposit: 0, OtherAddress: event.Owner.String()}
+	portNum, err := strconv.Atoi(os.Getenv("port"))
 
-	repository.InsertChannel(channel)
+	if err != nil{
+		log.Println(err)
+	}
+
+	if event.Receiver.String() == config.GetAccountConfig(portNum).PublicKeyAddress {
+		var channel = model.Channel{ChannelId: event.Id.Int64(), ChannelName: "Random",
+			Status: model.IDLE, MyAddress: event.Receiver.String(),
+			MyBalance: 0, MyDeposit: 0, OtherAddress: event.Owner.String()}
+
+		repository.InsertChannel(channel)
+	}else{
+		var channel = model.Channel{ChannelId: event.Id.Int64(), ChannelName: "Random",
+			Status: model.IDLE, MyAddress: event.Receiver.String(),
+			MyBalance: event.Deposit.Int64(), MyDeposit: 0, OtherAddress: event.Owner.String()}
+		repository.InsertChannel(channel)
+	}
+
+
+
 }
 
 func HandleCloseChannelEvent(event model.CloseChannelEvent) {
@@ -218,7 +234,6 @@ func HandleEjectEvent(event model.EjectEvent) {
 
 func GetBalance() big.Float {
 
-	// TODO locked balance를 제외한 balance를 리턴하게
 	port, _ := strconv.Atoi(os.Getenv("port"))
 	account := common.HexToAddress(config.GetAccountConfig(port).PublicKeyAddress)
 	client, err := ethclient.Dial("ws://" + config.EthereumConfig["wsHost"] + ":" + config.EthereumConfig["wsPort"])

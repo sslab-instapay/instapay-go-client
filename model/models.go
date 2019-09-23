@@ -15,20 +15,26 @@ type ChannelStatus string
 
 const (
 	// 0, 1, 2, 3
-	IDLE ChannelStatus = "IDLE"
-	PRE_UPDATE = "PRE_UPDATE"
-	POST_UPDATE = "POST_UPDATE"
-	CLOSED = "CLOSED"
+	IDLE        ChannelStatus = "IDLE"
+	PRE_UPDATE                = "PRE_UPDATE"
+	POST_UPDATE               = "POST_UPDATE"
+	CLOSED                    = "CLOSED"
 )
+
+type PaymentData struct {
+	PaymentNumber int64 `bson:"paymentNumber"`
+	ChannelId     int64 `bson:"channelId"`
+	Amount        int64 `bson:"amount"`
+}
 
 type Channel struct {
 	ChannelId     int64         `bson:"channelId"`
 	ChannelName   string        `bson:"channelName"`
 	Status        ChannelStatus `bson:"channelStatus"`
 	MyAddress     string        `bson:"myAddress"`
-	MyDeposit     float32       `bson:"myDeposit"`
-	MyBalance     float32       `bson:"myBalance"`
-	LockedBalance float32       `bson:"lockedBalance"`
+	MyDeposit     int64         `bson:"myDeposit"`
+	MyBalance     int64         `bson:"myBalance"`
+	LockedBalance int64         `bson:"lockedBalance"`
 	OtherAddress  string        `bson:"otherAddress"`
 	VersionNumber int           `bson:"versionNumber"`
 	OtherIp       int           `bson:"otherIp"`
@@ -52,4 +58,3 @@ type EjectEvent struct {
 	PaymentNum *big.Int
 	Stage      int
 }
-
