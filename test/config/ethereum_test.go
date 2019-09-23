@@ -2,13 +2,11 @@ package config_test
 
 import (
 	"testing"
-	"github.com/sslab-instapay/instapay-go-client/config"
-	"fmt"
+		"fmt"
+	"github.com/sslab-instapay/instapay-go-client/service"
 )
 
 func TestGetBalance(t *testing.T)  {
-
-	service := config.EthereumService{}
 
 	balance := service.GetBalance()
 

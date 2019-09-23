@@ -1,8 +1,7 @@
 package main
 
 import (
-			"github.com/sslab-instapay/instapay-go-client/config"
-	instapayGrpc "github.com/sslab-instapay/instapay-go-client/grpc"
+				instapayGrpc "github.com/sslab-instapay/instapay-go-client/grpc"
 	pb "github.com/sslab-instapay/instapay-go-client/proto"
 	"net"
 	"log"
@@ -11,10 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sslab-instapay/instapay-go-client/router"
 	"os"
+	"strconv"
 )
 
 func startGrpcServer(){
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", 50001))
+	grpcPort, err := strconv.Atoi(os.Getenv("grpc_port"))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", grpcPort))
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
@@ -38,9 +39,10 @@ func main() {
 	// os[1] os[2] 로 전역변수 셋팅.
 
 	os.Setenv("port", "3001")
+	os.Setenv("grpc_port", "50001")
 
-	go config.ListenContractEvent()
-	go startGrpcServer()
+	//go config.ListenContractEvent()
+	//go startGrpcServer()
 	startClientWebServer()
 
 }

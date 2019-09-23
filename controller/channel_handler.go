@@ -5,17 +5,16 @@ import (
 	"github.com/gin-gonic/gin"
 		"github.com/sslab-instapay/instapay-go-client/repository"
 	"log"
-	"fmt"
-	"strconv"
+		"strconv"
+	"github.com/sslab-instapay/instapay-go-client/service"
 )
 
 func OpenChannelHandler(context *gin.Context)  {
 	//channelName := context.PostForm("ch_name")
-	//myAddress := context.PostForm("my_addr")
-	//otherAddress := context.PostForm("other_addr")
-	//deposit := context.PostForm("deposit")
+	otherAddress := context.PostForm("other_addr")
+	deposit, _ := strconv.Atoi(context.PostForm("deposit"))
 
-	//TODO 채널 오픈 요청 컨트랙트와 ~~\
+	service.SendOpenChannelTransaction(deposit, otherAddress)
 
 	context.JSON(http.StatusOK, gin.H{"message": "Channel"})
 }
@@ -28,7 +27,6 @@ func DepositChannelHandler(context *gin.Context) {
 func DirectPayChannelHandler(context *gin.Context) {
 	//channelId := context.PostForm("ch_id")
 	//amount := context.PostForm("amount")
-
 	context.JSON(http.StatusOK, gin.H{"message": "Channel"})
 }
 
@@ -36,14 +34,7 @@ func CloseChannelHandler(context *gin.Context) {
 	channelIdParam := context.PostForm("channelId")
 	channelId, _ := strconv.Atoi(channelIdParam)
 
-	channel, err := repository.GetChannelById(int64(channelId))
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(channel)
-
-	//myBalance := channel.MyBalance
-
+	service.SendCloseChannelTransaction(int64(channelId))
 
 	context.JSON(http.StatusOK, gin.H{"message": "Channel"})
 }
