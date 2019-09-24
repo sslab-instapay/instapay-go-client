@@ -7,6 +7,7 @@ import (
 	"github.com/sslab-instapay/instapay-go-client/model"
 	"github.com/sslab-instapay/instapay-go-client/db"
 	"fmt"
+	"sync"
 )
 
 func GetChannelList() ([]model.Channel, error) {
@@ -190,6 +191,7 @@ func GetChannelById(channelId int64) (model.Channel, error) {
 	return channel, nil
 }
 
+
 func UpdateChannel(channel model.Channel) (model.Channel, error) {
 
 	database, err := db.GetDatabase()
@@ -197,15 +199,19 @@ func UpdateChannel(channel model.Channel) (model.Channel, error) {
 		return model.Channel{}, err
 	}
 
+
 	collection := database.Collection("channels")
 
 	filter := bson.M{"channelId": channel.ChannelId}
 	update := bson.M{"$set": bson.M{"channelStatus": channel.Status, "myBalance": channel.MyBalance, "otherAddress": channel.OtherAddress, "otherPort": channel.OtherPort, "otherIp": channel.OtherIp, "lockedBalance": channel.LockedBalance}}
 
+	var rwMutex = new(sync.RWMutex)
+	rwMutex.Lock()
 	res, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		log.Fatal(err)
 	}
+	rwMutex.Unlock()
 
 	fmt.Println(res.ModifiedCount)
 

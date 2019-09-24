@@ -12,9 +12,10 @@ import (
 	"os"
 	"strconv"
 		"flag"
-)
+	)
 
 func startGrpcServer(){
+	log.Println("---Start Grpc Server---")
 	grpcPort, err := strconv.Atoi(os.Getenv("grpc_port"))
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", grpcPort))
 	if err != nil {
@@ -26,6 +27,7 @@ func startGrpcServer(){
 }
 
 func startClientWebServer(){
+
 	defaultRouter := gin.Default()
 	defaultRouter.LoadHTMLGlob("templates/*")
 
@@ -49,8 +51,8 @@ func main() {
 	os.Setenv("grpc_port", *grpcPortNum)
 
 	//service.ListenContractEvent()
-	//startGrpcServer()
-	//startClientWebServer()
+	go startGrpcServer()
+	startClientWebServer()
 
 }
 
