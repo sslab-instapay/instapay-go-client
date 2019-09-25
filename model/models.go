@@ -44,7 +44,7 @@ type Channel struct {
 	MyBalance     int64         `bson:"myBalance"`
 	LockedBalance int64         `bson:"lockedBalance"`
 	OtherAddress  string        `bson:"otherAddress"`
-	OtherIp       int           `bson:"otherIp"`
+	OtherIp       string        `bson:"otherIp"`
 	OtherPort     int           `bson:"otherPort"`
 }
 

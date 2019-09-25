@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	instapay "github.com/sslab-instapay/instapay-go-client/contract"
+	serverPb "github.com/sslab-instapay/instapay-go-client/proto/server"
 	"github.com/sslab-instapay/instapay-go-client/config"
 	"context"
 	"fmt"
@@ -211,8 +212,6 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 		repository.InsertChannel(channel)
 	}
 
-	//TODO GRPC 로 server ip port 정보 받아오기
-
 	myAddress := config.GetAccountConfig().PublicKeyAddress
 	connection, err := grpc.Dial(config.EthereumConfig["serverGrpcHost"]+":"+config.EthereumConfig["serverGrpcPort"], grpc.WithInsecure())
 	if err != nil {
@@ -223,12 +222,22 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 
 	clientContext, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := client.PaymentRequest(clientContext, &serverPb.PaymentRequestMessage{From: myAddress, To: otherAddress, Amount: int64(amount)})
+	r, err := client.CommunicationInfoRequest(clientContext, &serverPb.Address{Addr: myAddress})
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println(r.GetResult())
 
+	channel, err := repository.GetChannelById(event.Id.Int64())
+	if err != nil{
+		log.Println(err)
+	}
+
+	channel.OtherPort = int(r.Port)
+	channel.OtherIp = r.IPAddress
+	_, err = repository.UpdateChannel(channel)
+	if err != nil{
+		log.Println(err)
+	}
 }
 
 func HandleCloseChannelEvent(event model.CloseChannelEvent) {
