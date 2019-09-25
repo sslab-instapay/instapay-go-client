@@ -213,7 +213,7 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 	}
 
 	myAddress := config.GetAccountConfig().PublicKeyAddress
-	connection, err := grpc.Dial(config.EthereumConfig["serverGrpcHost"]+":"+config.EthereumConfig["serverGrpcPort"], grpc.WithInsecure())
+	connection, err := grpc.Dial(config.EthereumConfig["serverGrpcHost"] + ":" + config.EthereumConfig["serverGrpcPort"], grpc.WithInsecure())
 	if err != nil {
 		log.Println(err)
 	}
