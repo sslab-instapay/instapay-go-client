@@ -57,6 +57,7 @@ func (s *ClientGrpc) UpdateRequest(ctx context.Context, in *clientPb.UpdateReque
 }
 
 func (s *ClientGrpc) ConfirmPayment(ctx context.Context, in *clientPb.ConfirmRequestsMessage) (*clientPb.Result, error) {
+	log.Println("----ConfirmPayment Request Receive----")
 	paymentDatas, err := repository.GetPaymentDatasByPaymentId(in.PaymentNumber)
 	if err != nil {
 		return &clientPb.Result{}, err
@@ -65,6 +66,7 @@ func (s *ClientGrpc) ConfirmPayment(ctx context.Context, in *clientPb.ConfirmReq
 	for _, paymentData := range paymentDatas {
 		channel, err := repository.GetChannelById(paymentData.ChannelId)
 		if err != nil {
+			log.Println("Error! ConfirmPayment")
 			return &clientPb.Result{}, err
 		}
 
@@ -75,6 +77,7 @@ func (s *ClientGrpc) ConfirmPayment(ctx context.Context, in *clientPb.ConfirmReq
 			return &clientPb.Result{}, err
 		}
 	}
+	log.Println("----ConfirmPayment Request End----")
 
 	return &clientPb.Result{PaymentNumber: in.PaymentNumber, Result: true}, nil
 }
