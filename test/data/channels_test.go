@@ -52,12 +52,12 @@ func TestGetChannelById(t *testing.T){
 
 func TestUpdateChannel(t *testing.T){
 	os.Setenv("database_name", "instapay-client")
-	channel, err := repository.GetChannelById(2)
+	channel, err := repository.GetChannelById(5)
 	if err != nil{
 		log.Fatal(err)
 	}
 	
-	channel.Status = model.IDLE
+	channel.Status = model.CLOSED
 	updatedChannel, err := repository.UpdateChannel(channel)
 
 	if err != nil {
@@ -94,7 +94,7 @@ func TestGetAllChannelsLockedBalance(t *testing.T){
 
 func TestInsertPaymentData(t *testing.T){
 	os.Setenv("database_name", "instapay-client")
-	repository.InsertPaymentData(model.PaymentData{PaymentNumber: 3, ChannelId: 3, Amount: 5})
+	repository.InsertPaymentData(model.PaymentData{PaymentNumber: 3, ChannelId: 3, Amount: 9})
 
 	fmt.Println(repository.GetPaymentDatasByPaymentNumber(3))
 }

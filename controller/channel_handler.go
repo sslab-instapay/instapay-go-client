@@ -8,8 +8,8 @@ import (
 	"strconv"
 	"github.com/sslab-instapay/instapay-go-client/service"
 	"github.com/sslab-instapay/instapay-go-client/config"
-	"google.golang.org/grpc"
 	serverPb "github.com/sslab-instapay/instapay-go-client/proto/server"
+	"google.golang.org/grpc"
 	"time"
 	"context"
 )
@@ -77,9 +77,6 @@ func PaymentToServerChannelHandler(ctx *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println("--- AMOUNT --- ")
-	log.Println(amount)
-	log.Println("---- Start Payment Request ----")
 
 	myAddress := config.GetAccountConfig().PublicKeyAddress
 	connection, err := grpc.Dial(config.EthereumConfig["serverGrpcHost"]+":"+config.EthereumConfig["serverGrpcPort"], grpc.WithInsecure())
