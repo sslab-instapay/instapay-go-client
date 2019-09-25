@@ -21,14 +21,14 @@ func (s *ClientGrpc) AgreementRequest(ctx context.Context, in *clientPb.AgreeReq
 
 		// update 채널 status 및 locked Balance
 		channel.Status = model.PRE_UPDATE
-		channel.LockedBalance -= in.Amount
+		channel.LockedBalance -= channelPayment.Amount
 
 		_, err = repository.UpdateChannel(channel)
 		if err != nil {
 			log.Println(err)
 		}
 		// PaymentData 삽입
-		_, err = repository.InsertPaymentData(model.PaymentData{PaymentNumber: in.PaymentNumber, ChannelId: channelPayment.ChannelId, Amount: in.Amount})
+		_, err = repository.InsertPaymentData(model.PaymentData{PaymentNumber: in.PaymentNumber, ChannelId: channelPayment.ChannelId, Amount: channelPayment.Amount})
 		if err != nil{
 			log.Println(err)
 		}
@@ -47,8 +47,8 @@ func (s *ClientGrpc) UpdateRequest(ctx context.Context, in *clientPb.UpdateReque
 		}
 		channel, err := repository.GetChannelById(channelPayment.ChannelId)
 		channel.Status = model.POST_UPDATE
-		channel.MyBalance += in.Amount
-		channel.LockedBalance += in.Amount
+		channel.MyBalance += channelPayment.Amount
+		channel.LockedBalance += channelPayment.Amount
 
 		_, err = repository.UpdateChannel(channel)
 		if err != nil {
