@@ -39,8 +39,10 @@ func GetPaymentDatasByPaymentId(paymentId int64) ([]model.PaymentData, error) {
 	}
 
 	collection := database.Collection("payments")
-
 	cur, err := collection.Find(context.TODO(), filter)
+	if err != nil {
+		return nil, err
+	}
 	var paymentDatas []model.PaymentData
 
 	defer cur.Close(context.Background())

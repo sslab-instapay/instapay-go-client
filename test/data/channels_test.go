@@ -7,6 +7,7 @@ import (
 	"github.com/sslab-instapay/instapay-go-client/repository"
 	"github.com/sslab-instapay/instapay-go-client/model"
 	"github.com/sslab-instapay/instapay-go-client/config"
+	"os"
 )
 
 func TestGetChannelList(t *testing.T){
@@ -40,6 +41,7 @@ func TestGetOpenedChannelList(t *testing.T){
 }
 
 func TestGetChannelById(t *testing.T){
+	os.Setenv("database_name", "instapay-client")
 	channel, err := repository.GetChannelById(2)
 
 	if err != nil{
@@ -91,9 +93,11 @@ func TestGetAllChannelsLockedBalance(t *testing.T){
 
 func TestGetPaymentDataByPaymentId(t *testing.T){
 
+	os.Setenv("database_name", "instapay-client")
 	paymentData, err := repository.GetPaymentDatasByPaymentId(1)
 
 	if err != nil{
+		log.Println("HO")
 		log.Fatal(err)
 	}
 

@@ -66,7 +66,11 @@ func (s *ClientGrpc) ConfirmPayment(ctx context.Context, in *clientPb.ConfirmReq
 		}
 
 		channel.Status = model.IDLE
-		repository.UpdateChannel(channel)
+		_, err = repository.UpdateChannel(channel)
+		if err != nil{
+			log.Println("Error! ConfirmPayment")
+			return &clientPb.Result{}, err
+		}
 	}
 
 	return &clientPb.Result{PaymentNumber: in.PaymentNumber, Result: true}, nil
