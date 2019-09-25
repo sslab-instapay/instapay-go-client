@@ -84,6 +84,8 @@ func PaymentToServerChannelHandler(ctx *gin.Context) {
 	connection, err := grpc.Dial(config.EthereumConfig["serverGrpcHost"]+":"+config.EthereumConfig["serverGrpcPort"], grpc.WithInsecure())
 	if err != nil {
 		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err})
+		return
 	}
 	defer connection.Close()
 	client := serverPb.NewServerClient(connection)
@@ -93,6 +95,8 @@ func PaymentToServerChannelHandler(ctx *gin.Context) {
 	r, err := client.PaymentRequest(clientContext, &serverPb.PaymentRequestMessage{From: myAddress, To: otherAddress, Amount: int64(amount)})
 	if err != nil {
 		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err})
+		return
 	}
 	log.Println(r.GetResult())
 

@@ -246,8 +246,6 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) error{
 		return err
 	}
 
-	log.Println(r.Port)
-	log.Println(r.IPAddress)
 	channel.OtherPort = int(r.Port)
 	channel.OtherIp = r.IPAddress
 	_, err = repository.UpdateChannel(channel)
