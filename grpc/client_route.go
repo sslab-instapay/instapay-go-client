@@ -38,7 +38,10 @@ func (s *ClientGrpc) UpdateRequest(ctx context.Context, in *clientPb.UpdateReque
 	channelPayments := in.ChannelPayments
 
 	for _, channelPayment := range channelPayments.ChannelPayments {
-
+		// 페이먼트 데이터 삽입
+		if result, _ := repository.FindPaymentData(model.PaymentData{ChannelId: channelPayment.ChannelId, PaymentNumber: in.PaymentNumber, Amount: channelPayment.Amount}); !result{
+			repository.InsertPaymentData(model.PaymentData{ChannelId: channelPayment.ChannelId, PaymentNumber: in.PaymentNumber, Amount: channelPayment.Amount})
+		}
 		channel, err := repository.GetChannelById(channelPayment.ChannelId)
 		channel.Status = model.POST_UPDATE
 		channel.MyBalance += in.Amount

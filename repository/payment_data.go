@@ -27,6 +27,27 @@ func InsertPaymentData(paymentData model.PaymentData) (model.PaymentData, error)
 	return paymentData, nil
 }
 
+func FindPaymentData(data model.PaymentData) (bool, error){
+	database, err := db.GetDatabase()
+	if err != nil {
+		return false, err
+	}
+
+	filter := bson.M{
+		"paymentId": data.PaymentNumber,
+		"channelId": data.ChannelId,
+		"amount": data.Amount,
+	}
+	collection := database.Collection("payments")
+	singleInstance := collection.FindOne(context.TODO(), filter)
+	var paymentData = model.PaymentData{}
+	err = singleInstance.Decode(&paymentData)
+	if err != nil{
+		return false, err
+	}
+	return true, nil
+}
+
 func GetPaymentDatasByPaymentId(paymentId int64) ([]model.PaymentData, error) {
 
 	database, err := db.GetDatabase()

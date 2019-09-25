@@ -104,6 +104,18 @@ func TestGetPaymentDataByPaymentId(t *testing.T){
 	fmt.Println(paymentData)
 }
 
+func TestFindPaymentData(t *testing.T){
+
+	os.Setenv("database_name", "instapay-client")
+	result, err := repository.FindPaymentData(model.PaymentData{PaymentNumber:1, ChannelId:2, Amount:5})
+
+	if err != nil{
+		log.Println("HO")
+		log.Fatal(err)
+	}
+
+	fmt.Println(result)
+}
 
 
 
