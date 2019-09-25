@@ -19,6 +19,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"strings"
 	"math"
+	"google.golang.org/grpc"
+	"time"
 )
 
 func SendOpenChannelTransaction(deposit int, otherAddress string) {
@@ -208,6 +210,24 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 			MyBalance: event.Deposit.Int64(), MyDeposit: event.Deposit.Int64(), OtherDeposit: 0, OtherAddress: event.Receiver.String()}
 		repository.InsertChannel(channel)
 	}
+
+	//TODO GRPC 로 server ip port 정보 받아오기
+
+	myAddress := config.GetAccountConfig().PublicKeyAddress
+	connection, err := grpc.Dial(config.EthereumConfig["serverGrpcHost"]+":"+config.EthereumConfig["serverGrpcPort"], grpc.WithInsecure())
+	if err != nil {
+		log.Println(err)
+	}
+	defer connection.Close()
+	client := serverPb.NewServerClient(connection)
+
+	clientContext, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := client.PaymentRequest(clientContext, &serverPb.PaymentRequestMessage{From: myAddress, To: otherAddress, Amount: int64(amount)})
+	if err != nil {
+		log.Println(err)
+	}
+	log.Println(r.GetResult())
 
 }
 

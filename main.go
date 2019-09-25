@@ -12,7 +12,8 @@ import (
 	"os"
 	"strconv"
 		"flag"
-	)
+	"github.com/sslab-instapay/instapay-go-client/service"
+)
 
 func startGrpcServer(){
 	log.Println("---Start Grpc Server---")
@@ -53,8 +54,8 @@ func main() {
 	os.Setenv("grpc_port", *grpcPortNum)
 	os.Setenv("database_name", *databaseName)
 
-	//service.ListenContractEvent()
-	//go startGrpcServer()
+	go service.ListenContractEvent()
+	go startGrpcServer()
 	startClientWebServer()
 
 }

@@ -68,7 +68,7 @@ func CloseChannelHandler(ctx *gin.Context) {
 }
 
 func PaymentToServerChannelHandler(ctx *gin.Context) {
-	//
+
 	otherAddress := ctx.PostForm("addr")
 	amount, err := strconv.Atoi(ctx.PostForm("amount"))
 	if err != nil {
