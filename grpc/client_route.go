@@ -28,7 +28,10 @@ func (s *ClientGrpc) AgreementRequest(ctx context.Context, in *clientPb.AgreeReq
 			log.Println(err)
 		}
 		// PaymentData 삽입
-		repository.InsertPaymentData(model.PaymentData{PaymentNumber: in.PaymentNumber, ChannelId: channelPayment.ChannelId, Amount: in.Amount})
+		_, err = repository.InsertPaymentData(model.PaymentData{PaymentNumber: in.PaymentNumber, ChannelId: channelPayment.ChannelId, Amount: in.Amount})
+		if err != nil{
+			log.Println(err)
+		}
 	}
 	return &clientPb.Result{PaymentNumber: in.PaymentNumber, Result: true}, nil
 }
@@ -39,8 +42,8 @@ func (s *ClientGrpc) UpdateRequest(ctx context.Context, in *clientPb.UpdateReque
 
 	for _, channelPayment := range channelPayments.ChannelPayments {
 		// 페이먼트 데이터 삽입
-		if result, _ := repository.FindPaymentData(model.PaymentData{ChannelId: channelPayment.ChannelId, PaymentNumber: in.PaymentNumber, Amount: channelPayment.Amount}); !result{
-			repository.InsertPaymentData(model.PaymentData{ChannelId: channelPayment.ChannelId, PaymentNumber: in.PaymentNumber, Amount: channelPayment.Amount})
+		if result, _ := repository.FindPaymentData(model.PaymentData{ PaymentNumber: in.PaymentNumber, ChannelId: channelPayment.ChannelId, Amount: channelPayment.Amount}); !result{
+			repository.InsertPaymentData(model.PaymentData{ PaymentNumber: in.PaymentNumber, ChannelId: channelPayment.ChannelId, Amount: channelPayment.Amount})
 		}
 		channel, err := repository.GetChannelById(channelPayment.ChannelId)
 		channel.Status = model.POST_UPDATE
@@ -58,7 +61,7 @@ func (s *ClientGrpc) UpdateRequest(ctx context.Context, in *clientPb.UpdateReque
 
 func (s *ClientGrpc) ConfirmPayment(ctx context.Context, in *clientPb.ConfirmRequestsMessage) (*clientPb.Result, error) {
 	log.Println("----ConfirmPayment Request Receive----")
-	paymentDatas, err := repository.GetPaymentDatasByPaymentId(in.PaymentNumber)
+	paymentDatas, err := repository.GetPaymentDatasByPaymentNumber(in.PaymentNumber)
 	if err != nil {
 		return &clientPb.Result{}, err
 	}

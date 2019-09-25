@@ -34,7 +34,7 @@ func FindPaymentData(data model.PaymentData) (bool, error){
 	}
 
 	filter := bson.M{
-		"paymentId": data.PaymentNumber,
+		"paymentNumber": data.PaymentNumber,
 		"channelId": data.ChannelId,
 		"amount": data.Amount,
 	}
@@ -48,7 +48,7 @@ func FindPaymentData(data model.PaymentData) (bool, error){
 	return true, nil
 }
 
-func GetPaymentDatasByPaymentId(paymentId int64) ([]model.PaymentData, error) {
+func GetPaymentDatasByPaymentNumber(paymentNumber int64) ([]model.PaymentData, error) {
 
 	database, err := db.GetDatabase()
 	if err != nil {
@@ -56,7 +56,7 @@ func GetPaymentDatasByPaymentId(paymentId int64) ([]model.PaymentData, error) {
 	}
 
 	filter := bson.M{
-		"paymentId": paymentId,
+		"paymentNumber": paymentNumber,
 	}
 
 	collection := database.Collection("payments")

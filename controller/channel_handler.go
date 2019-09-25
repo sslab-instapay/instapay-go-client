@@ -77,7 +77,8 @@ func PaymentToServerChannelHandler(ctx *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-
+	log.Println("--- AMOUNT --- ")
+	log.Println(amount)
 	log.Println("---- Start Payment Request ----")
 
 	myAddress := config.GetAccountConfig().PublicKeyAddress
