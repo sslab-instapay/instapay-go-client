@@ -1,8 +1,8 @@
 package main
 
 import (
-				instapayGrpc "github.com/sslab-instapay/instapay-go-client/grpc"
-	pb "github.com/sslab-instapay/instapay-go-client/proto"
+	instapayGrpc "github.com/sslab-instapay/instapay-go-client/grpc"
+	clientPb "github.com/sslab-instapay/instapay-go-client/proto/client"
 	"net"
 	"log"
 	"fmt"
@@ -22,7 +22,7 @@ func startGrpcServer(){
 		log.Fatalf("failed to listen: %v", err)
 	}
 	grpcServer := grpc.NewServer()
-	pb.RegisterClientServer(grpcServer, &instapayGrpc.ClientGrpc{})
+	clientPb.RegisterClientServer(grpcServer, &instapayGrpc.ClientGrpc{})
 	grpcServer.Serve(lis)
 }
 
@@ -44,14 +44,16 @@ func main() {
 
 	portNum := flag.String("port", "3001", "port number")
 	grpcPortNum := flag.String("grpc_port", "50001", "grpc_port number")
+	databaseName := flag.String("database_name", "instapay-client", "database Name")
 
 	flag.Parse()
 
 	os.Setenv("port", *portNum)
 	os.Setenv("grpc_port", *grpcPortNum)
+	os.Setenv("database_name", *databaseName)
 
 	//service.ListenContractEvent()
-	go startGrpcServer()
+	//go startGrpcServer()
 	startClientWebServer()
 
 }

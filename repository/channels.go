@@ -31,7 +31,7 @@ func GetChannelList() ([]model.Channel, error) {
 		var channel model.Channel
 		err := cur.Decode(&channel)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 		// To get the raw bson bytes use cursor.Current
 		channels = append(channels, channel)
@@ -66,7 +66,7 @@ func GetAllChannelsLockedBalance() (int64, error) {
 		var channel model.Channel
 		err := cur.Decode(&channel)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 		// To get the raw bson bytes use cursor.Current
 		lockedBalance += channel.LockedBalance
@@ -96,7 +96,7 @@ func GetChannelIdList() ([]int64, error) {
 		var channel model.Channel
 		err := cur.Decode(&channel)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 		// To get the raw bson bytes use cursor.Current
 		channelIds = append(channelIds, channel.ChannelId)
@@ -127,7 +127,7 @@ func GetClosedChannelList() ([]model.Channel, error) {
 		var channel model.Channel
 		err := cur.Decode(&channel)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 		channels = append(channels, channel)
 	}
@@ -161,7 +161,7 @@ func GetOpenedChannelList() ([]model.Channel, error) {
 		var channel model.Channel
 		err := cur.Decode(&channel)
 		if err != nil {
-			log.Fatal(err)
+			log.Println(err)
 		}
 		// To get the raw bson bytes use cursor.Current
 		channels = append(channels, channel)
@@ -186,7 +186,7 @@ func GetChannelById(channelId int64) (model.Channel, error) {
 	channel := model.Channel{}
 	singleRecord := collection.FindOne(context.TODO(), filter)
 	if err := singleRecord.Decode(&channel); err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	return channel, nil
 }
@@ -209,7 +209,7 @@ func UpdateChannel(channel model.Channel) (model.Channel, error) {
 	rwMutex.Lock()
 	res, err := collection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	rwMutex.Unlock()
 

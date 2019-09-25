@@ -7,10 +7,15 @@ import (
 	"log"
 	"strconv"
 	"github.com/sslab-instapay/instapay-go-client/service"
-					)
+	"github.com/sslab-instapay/instapay-go-client/config"
+	"google.golang.org/grpc"
+	serverPb "github.com/sslab-instapay/instapay-go-client/proto/server"
+	"time"
+	"context"
+)
 
 func OpenChannelHandler(ctx *gin.Context) {
-	//channelName := context.PostForm("ch_name")
+
 	otherAddress := ctx.PostForm("other_addr")
 	deposit, _ := strconv.Atoi(ctx.PostForm("deposit"))
 
@@ -64,31 +69,30 @@ func CloseChannelHandler(ctx *gin.Context) {
 
 func PaymentToServerChannelHandler(ctx *gin.Context) {
 	//
-	//otherAddress := ctx.PostForm("addr")
-	//amount, err := strconv.Atoi(ctx.PostForm("amount"))
-	//if err != nil {
-	//	log.Println(err)
-	//}
-	////
-	//myAddress := config.GetAccountConfig()
-	////TODO Server의 GRPC 호출
+	otherAddress := ctx.PostForm("addr")
+	amount, err := strconv.Atoi(ctx.PostForm("amount"))
+	if err != nil {
+		log.Println(err)
+	}
 	//
-	//connection, err := grpc.Dial(config.EthereumConfig["serverGrpcHost"]+":"+config.EthereumConfig["serverGrpcPort"], grpc.WithInsecure())
-	//if err != nil {
-	//	log.Println("did not connect: %v", err)
-	//}
-	//defer connection.Close()
-	//client := pb.NewClientClient(connection)
-	//
-	//clientContext, cancel := context.WithTimeout(context.Background(), time.Second)
-	//defer cancel()
-	//r, err := client.SayHello(client_context, &pb.HelloRequest{Name: name})
-	//if err != nil {
-	//	log.Fatalf("could not greet: %v", err)
-	//}
-	//log.Printf("Greeting: %s", r.GetMessage())
+	myAddress := config.GetAccountConfig().PublicKeyAddress
+	connection, err := grpc.Dial(config.EthereumConfig["serverGrpcHost"]+":"+config.EthereumConfig["serverGrpcPort"], grpc.WithInsecure())
+	if err != nil {
+		log.Println(err)
+	}
+	defer connection.Close()
+	client := serverPb.NewServerClient(connection)
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "Channel"})
+	clientContext, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := client.PaymentRequest(clientContext, &serverPb.PaymentRequestMessage{From: myAddress, To: otherAddress, Amount: int64(amount)})
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println(r.GetResult())
+
+	ctx.JSON(http.StatusOK, gin.H{"sendAddress": "Channel", "amount": 5})
 }
 
 func GetChannelListHandler(ctx *gin.Context) {

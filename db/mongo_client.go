@@ -5,6 +5,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"context"
 	"log"
+	"os"
 )
 
 // 몽고 DB 클라이언트 셋업
@@ -23,5 +24,6 @@ func GetDatabase() (*mongo.Database, error) {
 		log.Fatal(err)
 		return nil, err
 	}
-	return client.Database("instapay-client"), nil
+	databaseName := os.Getenv("database_name")
+	return client.Database(databaseName), nil
 }

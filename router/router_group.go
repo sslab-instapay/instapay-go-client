@@ -2,9 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
-
-	"github.com/sslab-instapay/instapay-go-client/controller"
+		"github.com/sslab-instapay/instapay-go-client/controller"
 )
 
 func RegisterChannelRouter(router *gin.Engine){
@@ -18,9 +16,7 @@ func RegisterChannelRouter(router *gin.Engine){
 		//		//	context.JSON(http.StatusOK, controller.DepositChannelHandler)
 		//		//})
 
-		channelRouter.POST("direct", func(context *gin.Context) {
-			context.JSON(http.StatusOK, controller.DirectPayChannelHandler)
-		})
+		channelRouter.POST("direct", controller.DirectPayChannelHandler)
 
 		channelRouter.POST("close", controller.CloseChannelHandler)
 
