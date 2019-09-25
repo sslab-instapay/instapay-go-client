@@ -9,7 +9,6 @@ import (
 )
 
 type ClientGrpc struct {
-
 }
 
 func (s *ClientGrpc) AgreementRequest(ctx context.Context, in *clientPb.AgreeRequestsMessage) (*clientPb.Result, error) {
@@ -22,7 +21,7 @@ func (s *ClientGrpc) AgreementRequest(ctx context.Context, in *clientPb.AgreeReq
 
 		// update 채널 status 및 locked Balance
 		channel.Status = model.PRE_UPDATE
-		channel.LockedBalance += in.Amount
+		channel.LockedBalance -= in.Amount
 
 		_, err = repository.UpdateChannel(channel)
 		if err != nil {
@@ -43,7 +42,7 @@ func (s *ClientGrpc) UpdateRequest(ctx context.Context, in *clientPb.UpdateReque
 		channel, err := repository.GetChannelById(channelPayment.ChannelId)
 		channel.Status = model.POST_UPDATE
 		channel.MyBalance += in.Amount
-		channel.LockedBalance -= in.Amount
+		channel.LockedBalance += in.Amount
 
 		_, err = repository.UpdateChannel(channel)
 		if err != nil {
@@ -56,13 +55,13 @@ func (s *ClientGrpc) UpdateRequest(ctx context.Context, in *clientPb.UpdateReque
 
 func (s *ClientGrpc) ConfirmPayment(ctx context.Context, in *clientPb.ConfirmRequestsMessage) (*clientPb.Result, error) {
 	paymentDatas, err := repository.GetPaymentDatasByPaymentId(in.PaymentNumber)
-	if err != nil{
+	if err != nil {
 		return &clientPb.Result{}, err
 	}
 
-	for _, paymentData := range paymentDatas{
+	for _, paymentData := range paymentDatas {
 		channel, err := repository.GetChannelById(paymentData.ChannelId)
-		if err != nil{
+		if err != nil {
 			return &clientPb.Result{}, err
 		}
 

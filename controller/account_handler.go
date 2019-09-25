@@ -19,7 +19,7 @@ func AccountInformationHandler(context *gin.Context) {
 		context.JSON(http.StatusInternalServerError, gin.H{"message": err})
 	} else {
 		convertedBalance, _ := balance.Int64()
-		totalBalance := convertedBalance + lockedBalance
+		totalBalance := convertedBalance - lockedBalance
 		context.JSON(http.StatusOK, gin.H{"address": account.PublicKeyAddress, "balance": totalBalance})
 	}
 

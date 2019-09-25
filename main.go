@@ -32,8 +32,9 @@ func startClientWebServer(){
 	defaultRouter.LoadHTMLGlob("templates/*")
 
 	defaultRouter.Use(CORSMiddleware())
-	router.RegisterChannelRouter(defaultRouter)
+	router.RegisterRestChannelRouter(defaultRouter)
 	router.RegisterRestAccountRouter(defaultRouter)
+	router.RegisterChannelRouter(defaultRouter)
 	router.RegisterViewRouter(defaultRouter)
 
 	defaultRouter.Run(":" + os.Getenv("port"))

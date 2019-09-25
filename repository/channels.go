@@ -170,6 +170,35 @@ func GetOpenedChannelList() ([]model.Channel, error) {
 	return channels, nil
 }
 
+func GetChannelsByChannelType(channelType model.ChannelType) ([]model.Channel, error){
+
+	database, err := db.GetDatabase()
+	if err != nil {
+		return nil, err
+	}
+
+	filter := bson.M{
+		"channelType": channelType,
+	}
+
+	collection := database.Collection("channels")
+	cur, err := collection.Find(context.TODO(), filter)
+
+	var channels []model.Channel
+	defer cur.Close(context.Background())
+	for cur.Next(context.Background()) {
+		var channel model.Channel
+		err := cur.Decode(&channel)
+		if err != nil {
+			log.Println(err)
+		}
+		// To get the raw bson bytes use cursor.Current
+		channels = append(channels, channel)
+	}
+
+	return channels, nil
+}
+
 func GetChannelById(channelId int64) (model.Channel, error) {
 
 	database, err := db.GetDatabase()

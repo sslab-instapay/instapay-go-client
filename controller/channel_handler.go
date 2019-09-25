@@ -74,7 +74,9 @@ func PaymentToServerChannelHandler(ctx *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-	//
+
+	log.Println("---- Start Payment Request ----")
+
 	myAddress := config.GetAccountConfig().PublicKeyAddress
 	connection, err := grpc.Dial(config.EthereumConfig["serverGrpcHost"]+":"+config.EthereumConfig["serverGrpcPort"], grpc.WithInsecure())
 	if err != nil {
@@ -89,10 +91,9 @@ func PaymentToServerChannelHandler(ctx *gin.Context) {
 	if err != nil {
 		log.Println(err)
 	}
-
 	log.Println(r.GetResult())
 
-	ctx.JSON(http.StatusOK, gin.H{"sendAddress": "Channel", "amount": 5})
+	ctx.JSON(http.StatusOK, gin.H{"sendAddress": otherAddress, "amount": amount})
 }
 
 func GetChannelListHandler(ctx *gin.Context) {
