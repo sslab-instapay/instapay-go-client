@@ -19,9 +19,12 @@ func OpenChannelHandler(ctx *gin.Context) {
 	otherAddress := ctx.PostForm("other_addr")
 	deposit, _ := strconv.Atoi(ctx.PostForm("deposit"))
 
-	service.SendOpenChannelTransaction(deposit, otherAddress)
-
-	ctx.JSON(http.StatusOK, gin.H{"message": "Channel"})
+	txHash, err := service.SendOpenChannelTransaction(deposit, otherAddress)
+	if err != nil{
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Error"})
+	}else{
+		ctx.JSON(http.StatusOK, gin.H{"result": "success", "txHash": txHash})
+	}
 }
 
 // TODO 데모 시나리오 이후 구현

@@ -24,42 +24,48 @@ import (
 	"time"
 )
 
-func SendOpenChannelTransaction(deposit int, otherAddress string) {
+func SendOpenChannelTransaction(deposit int, otherAddress string) (string, error) {
 
 	client, err := ethclient.Dial("ws://" + config.EthereumConfig["wsHost"] + ":" + config.EthereumConfig["wsPort"])
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return "", err
 	}
 
 	// loading instapay contract on the blockchain
 	address := common.HexToAddress(config.GetAccountConfig().PublicKeyAddress) // change to correct address
 	instance, err := instapay.NewContract(address, client)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return "", err
 	}
 
 	// loading my public key, nonce and gas price
 	privateKey, err := crypto.HexToECDSA(config.GetAccountConfig().PrivateKey)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return "", err
 	}
 
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
-		log.Fatal("cannot assert type: publicKey is not of type *ecdsa.PublicKey")
+		log.Println(err)
+		return "", err
 	}
 
 	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
 
 	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return "", err
 	}
 
 	gasPrice, err := client.SuggestGasPrice(context.Background())
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return "", err
 	}
 
 	// composing a transaction
@@ -73,10 +79,12 @@ func SendOpenChannelTransaction(deposit int, otherAddress string) {
 
 	tx, err := instance.CreateChannel(auth, receiver)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return "", err
 	}
 
 	fmt.Printf("tx sent: %s\n", tx.Hash().Hex())
+	return tx.Hash().Hex(), nil
 }
 
 func SendCloseChannelTransaction(channelId int64) {
