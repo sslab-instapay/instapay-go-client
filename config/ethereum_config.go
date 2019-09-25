@@ -11,7 +11,7 @@ var EthereumConfig = map[string]string{
 	"event":            "",
 
 	/* grpc configuration */
-	"serverGrpcHost": "http://141.223.121.139",
+	"serverGrpcHost": "141.223.121.139",
 	"serverGrpcPort": "50004",
 	"serverProto":    "",
 	"server":         "",

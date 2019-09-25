@@ -204,15 +204,16 @@ func ListenContractEvent() {
 	}
 }
 
-func HandleCreateChannelEvent(event model.CreateChannelEvent) {
+func HandleCreateChannelEvent(event model.CreateChannelEvent) error{
 
 	// 내가 리시버 즉 IN 채널
+	log.Println("----- Handle Create Channel Event ----")
 	if event.Receiver.String() == config.GetAccountConfig().PublicKeyAddress {
 		var channel = model.Channel{ChannelId: event.Id.Int64(), Type: model.IN,
 			Status: model.IDLE, MyAddress: event.Receiver.String(),
 			MyBalance: 0, MyDeposit: 0, OtherDeposit: event.Deposit.Int64(), OtherAddress: event.Owner.String()}
 		repository.InsertChannel(channel)
-	} else {
+	} else if event.Owner.String() == config.GetAccountConfig().PublicKeyAddress {
 		// 아웃 채널
 		var channel = model.Channel{ChannelId: event.Id.Int64(), Type: model.OUT,
 			Status: model.IDLE, MyAddress: event.Owner.String(),
@@ -223,7 +224,9 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 	myAddress := config.GetAccountConfig().PublicKeyAddress
 	connection, err := grpc.Dial(config.EthereumConfig["serverGrpcHost"] + ":" + config.EthereumConfig["serverGrpcPort"], grpc.WithInsecure())
 	if err != nil {
+		log.Println("GRPC Connection Error")
 		log.Println(err)
+		return err
 	}
 	defer connection.Close()
 	client := serverPb.NewServerClient(connection)
@@ -232,20 +235,28 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 	defer cancel()
 	r, err := client.CommunicationInfoRequest(clientContext, &serverPb.Address{Addr: myAddress})
 	if err != nil {
+		log.Println("GRPC Request Error")
 		log.Println(err)
+		return err
 	}
 
 	channel, err := repository.GetChannelById(event.Id.Int64())
 	if err != nil{
 		log.Println(err)
+		return err
 	}
 
+	log.Println(r.Port)
+	log.Println(r.IPAddress)
 	channel.OtherPort = int(r.Port)
 	channel.OtherIp = r.IPAddress
 	_, err = repository.UpdateChannel(channel)
 	if err != nil{
 		log.Println(err)
+		return err
 	}
+	log.Println("----- Handle Create Channel Event END ----")
+	return nil
 }
 
 func HandleCloseChannelEvent(event model.CloseChannelEvent) {
