@@ -206,6 +206,8 @@ func ListenContractEvent() {
 
 func HandleCreateChannelEvent(event model.CreateChannelEvent) error{
 
+	wei := big.NewInt(1000000000000000000)
+
 	// 내가 리시버 즉 IN 채널
 	log.Println("----- Handle Create Channel Event ----")
 	if event.Receiver.String() == config.GetAccountConfig().PublicKeyAddress {
@@ -214,10 +216,12 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) error{
 			MyBalance: 0, MyDeposit: 0, OtherDeposit: event.Deposit.Int64(), OtherAddress: event.Owner.String()}
 		repository.InsertChannel(channel)
 	} else if event.Owner.String() == config.GetAccountConfig().PublicKeyAddress {
+		DepositEth := new(big.Int).Div(event.Deposit, wei)
+
 		// 아웃 채널
 		var channel = model.Channel{ChannelId: event.Id.Int64(), Type: model.OUT,
 			Status: model.IDLE, MyAddress: event.Owner.String(),
-			MyBalance: event.Deposit.Int64(), MyDeposit: event.Deposit.Int64(), OtherDeposit: 0, OtherAddress: event.Receiver.String()}
+			MyBalance: DepositEth.Int64(), MyDeposit: DepositEth.Int64(), OtherDeposit: 0, OtherAddress: event.Receiver.String()}
 		repository.InsertChannel(channel)
 	}
 
