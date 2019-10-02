@@ -12,6 +12,7 @@ import (
 	"google.golang.org/grpc"
 	"time"
 	"context"
+	"github.com/sslab-instapay/instapay-go-client/model"
 )
 
 func OpenChannelHandler(ctx *gin.Context) {
@@ -20,9 +21,9 @@ func OpenChannelHandler(ctx *gin.Context) {
 	deposit, _ := strconv.Atoi(ctx.PostForm("deposit"))
 
 	txHash, err := service.SendOpenChannelTransaction(deposit, otherAddress)
-	if err != nil{
+	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Error"})
-	}else{
+	} else {
 		ctx.JSON(http.StatusOK, gin.H{"result": "success", "txHash": txHash})
 	}
 }
@@ -111,4 +112,37 @@ func GetChannelListHandler(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"channels": channelList,
 	})
+}
+
+func GetWalletInformationHandler(ctx *gin.Context) {
+
+	account := config.GetAccountConfig()
+
+	//balance, _ := account.Balance.Int64()
+
+	accountDto := model.AccountDTO{
+		PublicKeyAddress: account.PublicKeyAddress,
+		Balance:          1000,
+	}
+
+	openedChannelList, err := repository.GetOpenedChannelList()
+	if err != nil {
+		log.Println(err)
+	}
+
+	inChannelList := make([]model.Channel, 0)
+	outChannelList := make([]model.Channel, 0)
+
+	for _, channel := range openedChannelList {
+		if channel.Type == model.IN {
+			inChannelList = append(inChannelList, channel)
+		} else {
+			outChannelList = append(outChannelList, channel)
+		}
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"account": accountDto, "inChannelList": inChannelList, "outChannelList": outChannelList,
+	})
+
 }

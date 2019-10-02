@@ -6,16 +6,16 @@ import (
 )
 
 // 라우터 등록 코드
-func RegisterRestAccountRouter(router *gin.Engine){
+func RegisterRestRouter(router *gin.Engine){
 
 	accountRouter := router.Group("account")
 	{
 		accountRouter.GET("list", controller.AccountInformationHandler)
 	}
-}
-
-func RegisterRestChannelRouter(router *gin.Engine){
-
+	walletRouter := router.Group("wallets")
+	{
+		walletRouter.GET("", controller.GetWalletInformationHandler)
+	}
 	channelRouter := router.Group("channel")
 	{
 		channelRouter.GET("list", controller.GetChannelListHandler)

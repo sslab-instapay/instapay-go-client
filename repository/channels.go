@@ -144,7 +144,7 @@ func GetOpenedChannelList() ([]model.Channel, error) {
 
 	filter := bson.M{"channelStatus": bson.M{
 		"$not": bson.M{
-			"$eq": 3,
+			"$eq": model.CLOSED,
 		},
 	}}
 	collection := database.Collection("channels")

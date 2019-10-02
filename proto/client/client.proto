@@ -9,13 +9,11 @@ service Client {
 message AgreeRequestsMessage {
     int64 paymentNumber = 1;
     ChannelPayments channelPayments = 2;
-    int64 amount = 3;
 }
 
 message UpdateRequestsMessage{
     int64 paymentNumber = 1;
     ChannelPayments channelPayments = 2;
-    int64 amount = 3;
 }
 
 message ConfirmRequestsMessage{
