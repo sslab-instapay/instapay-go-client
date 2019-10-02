@@ -211,9 +211,11 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) error{
 	// 내가 리시버 즉 IN 채널
 	log.Println("----- Handle Create Channel Event ----")
 	if event.Receiver.String() == config.GetAccountConfig().PublicKeyAddress {
+		DepositEth := new(big.Int).Div(event.Deposit, wei)
+
 		var channel = model.Channel{ChannelId: event.Id.Int64(), Type: model.IN,
 			Status: model.IDLE, MyAddress: event.Receiver.String(),
-			MyBalance: 0, MyDeposit: 0, OtherDeposit: event.Deposit.Int64(), OtherAddress: event.Owner.String()}
+			MyBalance: 0, MyDeposit: 0, OtherDeposit: DepositEth.Int64(), OtherAddress: event.Owner.String()}
 		repository.InsertChannel(channel)
 	} else if event.Owner.String() == config.GetAccountConfig().PublicKeyAddress {
 		DepositEth := new(big.Int).Div(event.Deposit, wei)
