@@ -13,8 +13,7 @@ import (
 	"github.com/sslab-instapay/instapay-go-client/model"
 	"github.com/sslab-instapay/instapay-go-client/repository"
 	"github.com/sslab-instapay/instapay-go-client/config"
-	"fmt"
-)
+	)
 
 var EthereumConfig = map[string]string{
 	/* web3 and ethereum */
@@ -73,8 +72,6 @@ func main() {
 			log.Println("---Event Receive---")
 			err := contractAbi.Unpack(&createChannelEvent, "EventCreateChannel", vLog.Data)
 			if err == nil {
-				fmt.Println("HOHO")
-				log.Println("CreateChannel Event Emission")
 				HandleCreateChannelEvent(createChannelEvent)
 			}
 
@@ -99,6 +96,7 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) {
 	var channel = model.Channel{ChannelId: event.Id.Int64(),
 		Status: model.IDLE, MyAddress: event.Receiver.String(),
 		MyBalance: 0, MyDeposit: 0, OtherAddress: event.Owner.String()}
+	// TODO server에 보냄
 
 	repository.InsertChannel(channel)
 }

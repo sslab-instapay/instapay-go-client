@@ -227,7 +227,6 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) error{
 		repository.InsertChannel(channel)
 	}
 
-	myAddress := config.GetAccountConfig().PublicKeyAddress
 	connection, err := grpc.Dial(config.EthereumConfig["serverGrpcHost"] + ":" + config.EthereumConfig["serverGrpcPort"], grpc.WithInsecure())
 	if err != nil {
 		log.Println("GRPC Connection Error")
@@ -239,7 +238,15 @@ func HandleCreateChannelEvent(event model.CreateChannelEvent) error{
 
 	clientContext, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := client.CommunicationInfoRequest(clientContext, &serverPb.Address{Addr: myAddress})
+
+	var otherAddress string
+	if event.Receiver.String() == config.GetAccountConfig().PublicKeyAddress{
+		otherAddress = event.Owner.String()
+	}else {
+		otherAddress = event.Receiver.String()
+	}
+
+	r, err := client.CommunicationInfoRequest(clientContext, &serverPb.Address{Addr: otherAddress})
 	if err != nil {
 		log.Println("GRPC Request Error")
 		log.Println(err)
