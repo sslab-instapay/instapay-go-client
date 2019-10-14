@@ -118,11 +118,29 @@ func GetWalletInformationHandler(ctx *gin.Context) {
 
 	account := config.GetAccountConfig()
 
-	//balance, _ := account.Balance.Int64()
+	tempBalance, err := service.GetBalance()
+	var balance int64
+	if err != nil {
+		log.Println(err)
+	}
+
+	balance, _ = tempBalance.Int64()
+
+	offchainDeposit, err := repository.GetAllDepositValue()
+	if err != nil {
+		log.Println(err)
+	}
+
+	offchainBalance, err := repository.GetOffChainBalance()
+	if err != nil {
+		log.Println(err)
+	}
 
 	accountDto := model.AccountDTO{
 		PublicKeyAddress: account.PublicKeyAddress,
-		Balance:          1000,
+		Balance:          balance,
+		OffChainDeposit:  offchainDeposit,
+		OffChainBalance:  offchainBalance,
 	}
 
 	openedChannelList, err := repository.GetOpenedChannelList()

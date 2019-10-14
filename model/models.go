@@ -14,6 +14,8 @@ type Account struct {
 type AccountDTO struct {
 	PublicKeyAddress string `json:"address"`
 	Balance          int64  `json:"balance"`
+	OffChainDeposit  int64  `json:"offchainDeposit"`
+	OffChainBalance  int64  `json:"offchainBalance"`
 }
 
 type ChannelStatus string

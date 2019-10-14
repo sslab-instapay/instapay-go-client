@@ -6,6 +6,14 @@ import (
 	"os"
 )
 
+var AccountConfig = map[string]string{
+	/* web3 and ethereum */
+	"PublicKeyAddress": GetAccountConfig().PublicKeyAddress,
+	"PrivateKey": GetAccountConfig().PrivateKey,
+
+}
+
+
 // TODO Enclave에서 포트에 따라 어카운트 주소 불러와야함
 func GetAccountConfig() model.Account {
 	port, _ := strconv.Atoi(os.Getenv("port"))

@@ -285,19 +285,19 @@ func HandleEjectEvent(event model.EjectEvent) {
 	//TODO
 }
 
-func GetBalance() big.Float {
+func GetBalance() (big.Float, error) {
 
 	account := common.HexToAddress(config.GetAccountConfig().PublicKeyAddress)
 	client, err := ethclient.Dial("ws://" + config.EthereumConfig["wsHost"] + ":" + config.EthereumConfig["wsPort"])
 
 	if err != nil {
-		log.Println(err)
+		return *big.NewFloat(0), err
 	}
 
 	balance, err := client.BalanceAt(context.Background(), account, nil)
 
 	if err != nil {
-		log.Println(err)
+		return *big.NewFloat(0), err
 	}
 	log.Println(balance)
 
@@ -305,5 +305,5 @@ func GetBalance() big.Float {
 	floatBalance.SetString(balance.String())
 	ethValue := new(big.Float).Quo(floatBalance, big.NewFloat(math.Pow10(18)))
 
-	return *ethValue
+	return *ethValue, nil
 }
