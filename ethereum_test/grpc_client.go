@@ -23,7 +23,7 @@ func main() {
 	payment = append(payment, &pb.ChannelPayment{ChannelId: 4, Amount: 3})
 	var payments = pb.ChannelPayments{ChannelPayments: payment}
 
-	r, err := client.AgreementRequest(ctx, &pb.AgreeRequestsMessage{PaymentNumber: 3, ChannelPayments: &payments, Amount:5})
+	r, err := client.AgreementRequest(ctx, &pb.AgreeRequestsMessage{PaymentNumber: 3, ChannelPayments: &payments})
 	if err != nil {
 		log.Fatalf("could not greet: %v", err)
 	}
