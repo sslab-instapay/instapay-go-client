@@ -37,6 +37,7 @@ func AccountInformationHandler(context *gin.Context) {
 func OnchainPaymentHandler(ctx *gin.Context){
 	account := config.GetAccountConfig()
 	amount, err := strconv.Atoi(ctx.PostForm("amount"))
+	otherAddress := ctx.PostForm("address")
 	if err != nil{
 		log.Println(err)
 	}
@@ -62,7 +63,7 @@ func OnchainPaymentHandler(ctx *gin.Context){
 	if err != nil {
 		log.Println(err)
 	}
-	toAddress := common.HexToAddress(account.PublicKeyAddress)
+	toAddress := common.HexToAddress(otherAddress)
 	var data []byte
 	tx := types.NewTransaction(nonce, toAddress, value, gasLimit, gasPrice, data)
 	chainID, err := client.NetworkID(context.Background())
