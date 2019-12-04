@@ -11,6 +11,7 @@ func RegisterRestRouter(router *gin.Engine){
 	accountRouter := router.Group("account")
 	{
 		accountRouter.GET("list", controller.AccountInformationHandler)
+		accountRouter.POST("pay_onchain", controller.OnchainPaymentHandler)
 	}
 	walletRouter := router.Group("wallets")
 	{
